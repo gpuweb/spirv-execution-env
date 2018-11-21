@@ -62,9 +62,9 @@ This is an issue because resource accesses are often lowered to pointer arithmet
 For this reason out of bound accesses to resources must be prevented.
 
 Validating accesses are in bounds at shader module or pipeline creation time isn't possible because it is equivalent to the halting problem.
-Instead WebGPU implementation should make sure out of bounds accesses don't cause accesses outside of the ExecutionContext.
-This will be typically done by instrumenting the generated code, and because of the performance sensitive nature of it, implementation will have a choice in the behavior of each out of bounds access.
-Similarly to OpenGL's `GL_KHR_robust_buffer` access extension out of bounds accesses produces most produce the following behaviors:
+Instead a WebGPU implementation should make sure out of bounds accesses don't cause accesses outside of the ExecutionContext.
+This will typically be done by instrumenting the generated code, and because of the performance sensitive nature of it, implementation will have a choice in the behavior of each out of bounds access.
+Similarly to OpenGL's `GL_KHR_robust_buffer` extension, out of bounds accesses must produce one of the following behaviors:
 
 * Be discarded for writes
 * Access any location within the resource for reads and writes
@@ -100,7 +100,7 @@ NOTE: One of the possible behaviours of an ill-behaved application is non-termin
 
 ### Out of bounds
 
-Operations that are considered as out of bounds in SPIR-V (that's valid for WebGPU) are the following:
+Operations that are considered as out of bounds in SPIR-V (that are valid for WebGPU) are the following:
 
 * `OpLoad`, `OpRead`, `OpMemoryCopy` when the pointer is out of bounds.
 * `OpAccessChain` when any of the indices for array accesses are larger (or equal) to the array's size or when the pointer is out of bounds.
