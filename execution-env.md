@@ -1,51 +1,51 @@
 # WebGPU Execution Environment
 
-
 Note: Many items are marked "TBD".  In most cases those items will be resolved once the exact feature set of WebGPU has been determined.
-
 
 ## General WebGPU Environment
 
 [TBD: this may belong in a different specification, if it exists, about WebGPU]
 
-
 ### Introduction
 
-WebGPU executes graphics and compute pipelines.  A graphics pipeline processes data through a programmable vertex shader, and the resulting fragments through a programmable fragment shader.  A compute pipeline processes data via a compute shader.
+WebGPU executes graphics and compute pipelines.
+A graphics pipeline processes data through a programmable vertex shader, and the resulting fragments through a programmable fragment shader.
+A compute pipeline processes data via a compute shader.
 
 A WebGPU pipeline defines:
 
+* Shader modules for each programmable stage (vertex, fragment, and compute)
+  * Shader modules declare their usage of resources as "bindings", "vertex inputs" or "fragment outputs".
+    This is the shader module's implicit resource interface.
+* Specialization constants for each shader module
+* A "resource interface" that must be a superset of each of the shader module implicit interfaces.
+  Each resource in a resource interface can be either read-only or read-write.
+* Various "fixed function" configuration options.
 
-
-*   Shader modules for each programmable stage (vertex, fragment, and compute)
-    *   Shader modules declare their usage of resources as "bindings", "vertex inputs" or "fragment outputs", this is the shader module implicit resource interface.
-*   Specialization constants for each shader module
-*   A "resource interface" that must be a superset of each of the shader module implicit interfaces. Each resource in a resource interface can be either read-only or read-write.
-*   Various "fixed function" configuration options.
-
-WebGPU shaders are expressed in SPIR-V.  SPIR-V is usable in several execution environments, and so its core definition describes a superset of functionality across all those environments. The "WebGPU Execution Environment Specification for SPIR-V" section describes restrictions on SPIR-V for use with WebGPU.
-
+WebGPU shaders are expressed in SPIR-V.  SPIR-V is usable in several execution environments, and so its core definition describes a superset of functionality across all those environments.
+The "WebGPU Execution Environment Specification for SPIR-V" section describes restrictions on SPIR-V for use with WebGPU.
 
 ### Security Model
 
-A WebGPU application (an "App") consists of code to invoke WebGPU API entry points ("host code"), and WebGPU shaders.  A WebGPU implementation does not trust either host code or shaders.
+A WebGPU application (an "App") consists of code to invoke WebGPU API entry points ("host code"), and WebGPU shaders.
+A WebGPU implementation does not trust either host code or shaders.
 
 Stages of execution:
 
+1. A WebGPU implementation loads App code, and begins running the App host code in an untrusted manner.
+1. The App host code invokes WebGPU APIs to create resources, load shaders, and create a pipeline configuration.
+1. The App invokes a WebGPU API to run a pipeline.
 
+During these steps the WebGPU implementation will have:
 
-1.  A WebGPU implementation loads App code, and begins running the App host code in an untrusted manner.
-1.  The App host code invokes WebGPU APIs to create resources, load shaders, and create a pipeline configuration.
-1.  The App invokes a WebGPU API to run a pipeline.  In response, the WebGPU implementation:
-    1.  Validates the pipeline configuration and all associated objects. If the configuration is invalid, this procedure terminates with an error.  Otherwise the procedure continues.
-    1.  Determines the set of data resources that should be accessible to the shaders, and in what access modes (e.g. read-only, read-write).
-    1.  Determines the computing resources to be used to execute the pipeline.
-    1.  Creates a pipeline ExecutionContext consisting of the computing and data resources that are valid to be used by the pipeline, and in particular by the shaders in the pipeline.  Each data resource is associated with valid access modes: read-only resources may only be read; only writable resources may be written.
-    1.  Executes the pipeline, subject to the security property that follows.
+1. Validated the pipeline configuration and all associated objects.
+1. Determined the set of data resources that should be accessible to the shaders, and in what access modes (e.g. read-only, read-write).
+1. Determined the computing resources to be used to execute the pipeline.
+1. Created a pipeline ExecutionContext consisting of the computing and data resources that are valid to be used by the pipeline, and in particular by the shaders in the pipeline. 
+   Each data resource is associated with valid access modes: read-only resources may only be read; only writable resources may be written.
+1. Executes the pipeline, subject to the security property that follows.
 
 A WebGPU implementation is _secure_ if, for any application _App_ running on the implementation, accesses explicitly granted to App are the only means by which:
-
-
 
 *   _App_ may sense state outside its ExecutionContext
 *   _App_ may cause mutation of state outside its ExecutionContext
@@ -53,14 +53,38 @@ A WebGPU implementation is _secure_ if, for any application _App_ running on the
 
 An access is considered explicitly granted only if:
 
-
-
 *   It is a read access to a resource attached for reading to the ExecutionContext
 *   It is a write access to a resource attached for writing to the ExecutionContext
 
+Typically a WebGPU implementations can make sure that the _App_ can only access resources provided in the ExecutionContext by validating the code in the shader module.
+However this only guarantees that the correct resources are accessed, not that they are accessed in bounds.
+This is an issue because resource accesses are often lowered to pointer arithmetic so out of bounds accesses could result in accesses outside the ExecutionContext.
+For this reason out of bound accesses to resources must be prevented.
+
+Validating accesses are in bounds at shader module or pipeline creation time isn't possible because it is equivalent to the halting problem.
+Instead WebGPU implementation should make sure out of bounds accesses don't cause accesses outside of the ExecutionContext.
+This will be typically done by instrumenting the generated code, and because of the performance sensitive nature of it, implementation will have a choice in the behavior of each out of bounds access.
+Similarly to OpenGL's `GL_KHR_robust_buffer` access extension out of bounds accesses produces most produce the following behaviors:
+
+* Be discarded for writes
+* Access any location within the resource for reads and writes
+* Return zero values for reads or (0, 0, 0, X) with X being 0, 1, -1, or extrema for integers, or -0.0, +0.0, -1.0, +1.0 for floating point values
+* Atomics can return undefined values.
+
+The robust resource access behavior of OpenGL is extended to allow for trapping behavior as well:
+
+* Cause a trap that immediately stops execution of the shader, and fills all of the shader stage's output with zeroes.
+
+Additionnally functionality exists to create pointers to values inside resources.
+Creating a pointer for a resource that points to outside the resource could also result in the following behavior:
+
+* Cause a trap.
+* Defer the out of bounds behavior to when the pointer is dereferenced.
+* Create a pointer to any location within the resource. (this is equivalent to deferring and "access any location" for resource accesses).
+
+(TODO are there pointers to unsized arrays? Could talk about the "sized part of the type if that's the case")
 
 ## WebGPU Execution Environment Specification for SPIR-V
-
 
 ### Introduction
 
@@ -68,13 +92,28 @@ WebGPU is a client API for SPIR-V. Valid s<span style="color:#222222;">haders fo
 
 The following sections visit the parts of a SPIR-V module, in order, covering each section, and state additional requirements for using shaders in WebGPU. These are in addition to all requirements already present in the SPIR-V specification itself.
 
-
 ### Undefined Behaviour
 
 The SPIR-V specification states that certain actions by a SPIR-V shader result in _undefined_ _behaviour_.  A WebGPU implementation is required to be secure.  Therefore in the context of WebGPU, a shader which triggers SPIR-V's undefined behaviour may continue to execute in an arbitrary manner except that it may not sense or mutate any state outside its ExecutionContext, and it may not cause or sense I/O outside its ExecutionContext.
 
 NOTE: One of the possible behaviours of an ill-behaved application is non-termination.  The WebGPU specification should say what happens to a runaway application. TBD
 
+### Out of bounds
+
+Operations that are considered as out of bounds in SPIR-V (that's valid for WebGPU) are the following:
+
+* `OpLoad`, `OpRead`, `OpMemoryCopy` when the pointer is out of bounds.
+* `OpAccessChain` when any of the indices for array accesses are larger (or equal) to the array's size or when the pointer is out of bounds.
+  Note that the size of arrays might known at runtime for `OpTypeRuntimeArray`.
+* `OpInBoundsAccessChain` under the same conditions as `OpAccessChain`, effectively making it an exact equivalent of `OpAccessChain`.
+* All operations starting with `OpAtomic` when the pointer is out of bounds.
+* `OpImageFetch`, `OpImageRead`, `OpImageWrite` when coordinates aren't in bounds of the resource.
+* `OpImageTexelPointer` when the coordinates aren't in bounds of the resource.
+
+Other operations can result in out of bounds even if they aren't on resources. The same out of bounds rule apply to them as well:
+
+* `OpVectorIndexDynamic` and `OpVectorInsertDynamic` when the index is larger (or equal to) the vector size.
+* `OpBitFieldInsert`, `OpBitFieldSExtract` and `OpBitFieldUExtract` when the range of bits isn't fully contained in the variable.
 
 ### Version
 
