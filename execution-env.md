@@ -56,13 +56,13 @@ An access is considered explicitly granted only if:
 *   It is a read access to a resource attached for reading to the ExecutionContext
 *   It is a write access to a resource attached for writing to the ExecutionContext
 
-Typically a WebGPU implementations can make sure that the _App_ can only access resources provided in the ExecutionContext by validating the code in the shader module.
+Typically a WebGPU implementation can make sure that the _App_ can only access resources provided in the ExecutionContext by validating the code in the shader module.
 However this only guarantees that the correct resources are accessed, not that they are accessed in bounds.
 This is an issue because resource accesses are often lowered to pointer arithmetic so out of bounds accesses could result in accesses outside the ExecutionContext.
 For this reason out of bound accesses to resources must be prevented.
 
 Validating accesses are in bounds at shader module or pipeline creation time isn't possible because it is equivalent to the halting problem.
-Instead a WebGPU implementation should make sure out of bounds accesses don't cause accesses outside of the ExecutionContext.
+Instead a WebGPU implementation must ensure out of bounds accesses don't cause accesses outside of the ExecutionContext.
 This will typically be done by instrumenting the generated code, and because of the performance sensitive nature of it, implementation will have a choice in the behavior of each out of bounds access.
 Similarly to OpenGL's `GL_KHR_robust_buffer` extension, out of bounds accesses must produce one of the following behaviors:
 
@@ -73,16 +73,16 @@ Similarly to OpenGL's `GL_KHR_robust_buffer` extension, out of bounds accesses m
 
 The robust resource access behavior of OpenGL is extended to allow for trapping behavior as well:
 
-* Cause a trap that immediately stops execution of the shader, and fills all of the shader stage's output with zeroes.
+* Causes a trap. That is, causes the shader invocation to write zero values to all shader stage outputs, and then terminate without other side effects.
 
-Additionnally functionality exists to create pointers to values inside resources.
+Additionnal functionality exists to create pointers to values inside resources.
 Creating a pointer for a resource that points to outside the resource could also result in the following behavior:
 
 * Cause a trap.
 * Defer the out of bounds behavior to when the pointer is dereferenced.
 * Create a pointer to any location within the resource. (this is equivalent to deferring and "access any location" for resource accesses).
 
-(TODO are there pointers to unsized arrays? Could talk about the "sized part of the type if that's the case")
+(TODO are there pointers to unsized arrays? Could talk about the "sized part of the type if that's the case" and use the "any location" rule)
 
 ## WebGPU Execution Environment Specification for SPIR-V
 
@@ -104,7 +104,8 @@ Operations that are considered as out of bounds in SPIR-V (that are valid for We
 
 * `OpLoad`, `OpRead`, `OpMemoryCopy` when the pointer is out of bounds.
 * `OpAccessChain` when any of the indices for array accesses are larger (or equal) to the array's size or when the pointer is out of bounds.
-  Note that the size of arrays might known at runtime for `OpTypeRuntimeArray`.
+   Note that the size of arrays are known at runtime for `OpTypeRuntimeArray`.
+   Sizes for `OpTypeArray` are always known at pipeline compilation time when all specialization constants have been set.
 * `OpInBoundsAccessChain` under the same conditions as `OpAccessChain`, effectively making it an exact equivalent of `OpAccessChain`.
 * All operations starting with `OpAtomic` when the pointer is out of bounds.
 * `OpImageFetch`, `OpImageRead`, `OpImageWrite` when coordinates aren't in bounds of the resource.
