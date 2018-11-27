@@ -56,31 +56,56 @@ An access is considered explicitly granted only if:
 *   It is a read access to a resource attached for reading to the ExecutionContext
 *   It is a write access to a resource attached for writing to the ExecutionContext
 
+### Out-of-bounds Access Behavior
+
 Typically a WebGPU implementation can make sure that the _App_ can only access resources provided in the ExecutionContext by validating the code in the shader module.
 However this only guarantees that the correct resources are accessed, not that they are accessed in bounds.
-This is an issue because resource accesses are often lowered to pointer arithmetic so out of bounds accesses could result in accesses outside the ExecutionContext.
-For this reason out of bound accesses to resources must be prevented.
 
-Validating accesses are in bounds at shader module or pipeline creation time isn't possible because it is equivalent to the halting problem.
-Instead a WebGPU implementation must ensure out of bounds accesses don't cause accesses outside of the ExecutionContext.
-This will typically be done by instrumenting the generated code, and because of the performance sensitive nature of it, implementation will have a choice in the behavior of each out of bounds access.
-Similarly to OpenGL's `GL_KHR_robust_buffer` extension, out of bounds accesses must produce one of the following behaviors:
+A WebGPU implementation must ensure out of bounds accesses don't cause accesses outside of the ExecutionContext.
+This will typically be done by instrumenting the generated code. Because this code is highly performance sensitive, the WebGPU implementation is granted multiple options for enforcing security.
 
-* Be discarded for writes
-* Access any location within the resource for reads and writes
-* Return zero values for reads or (0, 0, 0, X) with X being 0, 1, -1, or extrema for integers, or -0.0, +0.0, -1.0, +1.0 for floating point values
-* Atomics can return undefined values.
+The following rules are based on those defined by the
+*robustBufferAccess* feature in the [Vulkan 1.0
+specification](https://www.khronos.org/registry/vulkan/specs/1.0/html/vkspec.html#features-features).
 
-The robust resource access behavior of OpenGL is extended to allow for trapping behavior as well:
+Out-of-bounds buffer loads _may_ result in any of the following behaviors:
 
-* Causes a trap. That is, causes the shader invocation to write zero values to all shader stage outputs, and then terminate without other side effects.
+* Return values from anywhere within the memory range(s) bound to the
+  buffer (possibly including bytes of memory past the end of the
+  buffer, up to the end of the bound range).
 
-Additionnal functionality exists to create pointers to values inside resources.
-Creating a pointer for a resource that points to outside the resource could also result in the following behavior:
+* Return zero values, or _(0,0,0,x)_ vectors for vector reads,
+  where x is a valid value represented in the type of the vector
+  components and _may_ be any of:
 
+** 0, 1, or the maximum representable positive integer value, for
+   signed or unsigned integer components.
+
+** 0.0 or 1.0, for floating-point components.
+
+* Cause a trap: that is, cause the shader invocation to write zero values to all shader stage outputs, and then terminate without other side effects.
+
+Out-of-bounds buffer writes _may_ result in any of the following behaviors:
+
+* Be discarded.
+* Modify values within the memory range(s) bound to the buffer, but
+  _must_ not modify any other memory.
 * Cause a trap.
+
+Out-of-bounds atomics _may_ result in any of the following behaviors:
+
+* Be discarded.
+* Modify values within the memory range(s) bound to the buffer, but
+  _must_ not modify any other memory.
+* Return an undefined value.
+* Cause a trap.
+
+Additional functionality exists to create pointers to values inside resources.
+Creating a pointer for a resource that points outside the resource _may_ result in any of the following behaviors:
+
 * Defer the out of bounds behavior to when the pointer is dereferenced.
 * Create a pointer to any location within the resource. (this is equivalent to deferring and "access any location" for resource accesses).
+* Cause a trap.
 
 (TODO are there pointers to unsized arrays? Could talk about the "sized part of the type if that's the case" and use the "any location" rule)
 
@@ -98,9 +123,9 @@ The SPIR-V specification states that certain actions by a SPIR-V shader result i
 
 NOTE: One of the possible behaviours of an ill-behaved application is non-termination.  The WebGPU specification should say what happens to a runaway application. TBD
 
-### Out of bounds
+### Opcodes Potentially Resulting in Out-Of-Bounds Accesses
 
-Operations that are considered as out of bounds in SPIR-V (that are valid for WebGPU) are the following:
+Certain operations in SPIR-V which are valid in the WebGPU environment could result in out-of-bounds accesses. Their behavior is governed by the [out-of-bounds access behavior](#out-of-bounds-access-behavior) section above.
 
 * `OpLoad`, `OpRead`, `OpMemoryCopy` when the pointer is out of bounds.
 * `OpAccessChain` when any of the indices for array accesses are larger (or equal) to the array's size or when the pointer is out of bounds.
@@ -111,9 +136,9 @@ Operations that are considered as out of bounds in SPIR-V (that are valid for We
 * `OpImageFetch`, `OpImageRead`, `OpImageWrite` when coordinates aren't in bounds of the resource.
 * `OpImageTexelPointer` when the coordinates aren't in bounds of the resource.
 
-Other operations can result in out of bounds even if they aren't on resources. The same out of bounds rule apply to them as well:
+Other operations can result in out-of-bounds accesses even if they aren't on resources. The same out of bounds rules apply to them as well:
 
-* `OpVectorIndexDynamic` and `OpVectorInsertDynamic` when the index is larger (or equal to) the vector size.
+* `OpVectorIndexDynamic` and `OpVectorInsertDynamic` when the index is larger than, or equal to, the vector size.
 * `OpBitFieldInsert`, `OpBitFieldSExtract` and `OpBitFieldUExtract` when the range of bits isn't fully contained in the variable.
 
 ### Version
