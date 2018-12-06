@@ -78,10 +78,10 @@ Out-of-bounds buffer loads _may_ result in any of the following behaviors:
   where x is a valid value represented in the type of the vector
   components and _may_ be any of:
 
-** 0, 1, or the maximum representable positive integer value, for
-   signed or unsigned integer components.
+  * 0, 1, or the maximum representable positive integer value, for
+    signed or unsigned integer components.
 
-** 0.0 or 1.0, for floating-point components.
+  * 0.0 or 1.0, for floating-point components.
 
 * Cause a trap: that is, cause the shader invocation to write zero values to all shader stage outputs, and then terminate without other side effects.
 
