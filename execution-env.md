@@ -261,7 +261,7 @@ Only the following decorations are valid:
 *   **SpecId**
 *   **Block**
 *   **RowMajor**
-*   **ColumnMajor**
+*   **ColMajor**
 *   **ArrayStride** (also see "Layouts" below)
 *   **MatrixStride** (also see "Layouts" below)
 *   **Builtin** (also see "Built-In Variables" below)
