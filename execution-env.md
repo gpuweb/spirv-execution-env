@@ -612,7 +612,113 @@ Each such interface must match, via the following matching rules:
 
 ### Layout
 
-All SPIR-V aggregates and matrices appearing in the **Uniform** (... TBD) storage classes must be explicitly and fully laid out through the **Offset**, **ArrayStride**, and **MatrixStride** decorations. These must satisfy the following rules:
+_Text in this section is adapted from [14.5.4 Offset and Stride Assignment](https://www.khronos.org/registry/vulkan/specs/1.1/html/vkspec.html#interfaces-resources-layout) section in
+the [Vulkan Specification version 1.1][Vulkan 1.1]_
 
-[ insert the same rules as given in section 14.5.4. "Offset and Stride Assignment" of the Vulkan spec.] TBD
+All SPIR-V aggregates and matrices appearing in the **Uniform** and **StorageBuffer** storage classes must be explicitly and fully laid out through the **Offset**, **ArrayStride**, **MatrixStride**, **RowMajor**, and **ColMajor** decorations. These must satisfy the following rules described in this section.
 
+Note: If WebGPU supports push constants, then aggregates and matrices in the **PushConstant** storage class must also be explicitly laid out. See [WebGPU Issue 75](https://github.com/gpuweb/gpuweb/issues/75).
+
+
+Two different layouts requirements are described below: standard uniform buffer layout,
+and standard storage buffer layout.  The rules to apply for a specific resource
+depends on the type of the buffer resource.
+
+#### General considerations
+
+Offsets and strides are expressed in units of 8-bit bytes.
+
+A scalar numeric value of 32 bits occupies 4 bytes in memory, i.e. its size is 4.
+In general a scalar value of _N_ bits occupies _floor((N + 7) / 8)_ bytes.
+
+Layout decorations on SPIR-V objects may not conflict or be duplicated:
+
+* A SPIR-V object or structure member must have at most one decoration each of kind:
+   * **Offset**
+   * **ArrayStride**
+   * **MatrixStride**
+   * **RowMajor**
+   * **ColMajor**
+* A SPIR-V structure member must not be decorated with both **RowMajor** and **ColMajor**.
+
+The numeric order of **Offset** decorations does not need to follow structure member
+declaration order. That is, offsets of structure members are not necessarily monotonic.
+
+Section [2.16.2 Validation Rules for Shader Capabilities](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_shadervalidation_a_validation_rules_for_shader_a_href_capability_capabilities_a) of the SPIR-V specification has additional constraints not copied here.
+For example, in effect:
+
+* Structure members may not overlap.
+* Each matrix in **Uniform** or **StorageBuffer** storage must have
+its row- or column-majorness expressed as a **RowMajor** or **ColMajor**
+decoration on the nearest enclosing structure member.
+
+#### Standard Uniform Buffer Layout
+
+This section specifies rules for _Standard Uniform Buffer Layout_.
+
+The _base alignment_ of the type of an **OpTypeStruct** member is
+defined recursively as follows:
+
+* A scalar of size _N_ bytes has a base alignment of _N_.
+* A two-component vector, with components of size _N_ bytes, has a base
+  alignment of _2 N_.
+* A three- or four-component vector, with components of size _N_ bytes, has
+  a base alignment of _4 N_.
+* An array has a base alignment equal to the base alignment of its element
+  type, rounded up to a multiple of _16_.
+* A structure has a base alignment equal to the largest base alignment of
+  any of its members, rounded up to a multiple of _16_.
+* A row-major matrix of _C_ columns has a base alignment equal to the
+  base alignment of a vector of _C_ matrix components.
+* A column-major matrix has a base alignment equal to the base alignment
+  of the matrix column type.
+
+A member is defined to _improperly straddle_ if either of the following are
+true:
+
+* It is a vector with total size less than or equal to 16 bytes, and has
+  **Offset** decorations placing its first byte at _F_ and its last
+  byte at _L_, where _floor(F / 16) != floor(L / 16)_.
+* It is a vector with total size greater than 16 bytes and has its
+  **Offset** decorations placing its first byte at a non-integer multiple
+  of 16.
+
+Every member of an **OpTypeStruct** with storage class of **Uniform** and
+a decoration of **Block** (uniform buffers) must be laid out according to
+the following rules:
+
+* The **Offset** decoration of a scalar, an array, a structure, or a
+  matrix must be a multiple of its base alignment.
+* The **Offset** decoration of a vector must be an integer multiple of
+  the base alignment of its scalar component type, and must not
+  improperly straddle, as defined above.
+* Any **ArrayStride** or **MatrixStride** decoration must be an integer
+  multiple of the base alignment of the array or matrix from above.
+* The **Offset** decoration of a member must not place it between the
+  end of a structure or an array and the next multiple of the base
+  alignment of that structure or array.
+
+Note: The **std140** layout in GLSL satisfies these rules.
+
+Note: The above assumes WebGPU can use what Vulkan calls _relaxed block layout_,
+which is optional in Vulkan 1.0 but a required feature of Vulkan 1.1.
+
+#### Standard Storage Buffer Layout
+
+This section specifies rules for _Standard Storage Buffer Layout_.
+
+Member variables of an **OpTypeStruct** with a storage class of
+**StorageBuffer** with a decoration of **Block**
+must be laid out as for _Standard Uniform Buffer Layout_,  except
+for array and structure base alignment which do not need to be rounded up to
+a multiple of _16_.
+
+Note: The **std430** in GLSL satisfies these rules.
+
+[//]: # (Assume no scalar block aligment)
+
+# References
+<a name="vulkan1.1"
+href="https://www.khronos.org/registry/vulkan/specs/1.1/html/vkspec.html">Vulkan Specification, version 1.1</a>, The Khronos Group Inc.  Portions copied and modified under Creative Commons Attribution 4.0 International License.  See terms at [Vulkan-Docs/COPYING.md](https://github.com/KhronosGroup/Vulkan-Docs/blob/master/COPYING.md)
+
+[Vulkan 1.1]: #vulkan1.1
