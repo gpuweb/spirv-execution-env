@@ -121,7 +121,7 @@ The following sections visit the parts of a SPIR-V module, in order, covering ea
 
 The SPIR-V specification states that certain actions by a SPIR-V shader result in _undefined_ _behaviour_.  A WebGPU implementation is required to be secure.  Therefore in the context of WebGPU, a shader which triggers SPIR-V's undefined behaviour may continue to execute in an arbitrary manner except that it may not sense or mutate any state outside its ExecutionContext, and it may not cause or sense I/O outside its ExecutionContext.
 
-NOTE: One of the possible behaviours of an ill-behaved application is non-termination.  The WebGPU specification should say what happens to a runaway application. TBD
+NOTE: One of the possible behaviours of an ill-behaved application is non-termination.  The WebGPU specification should say what happens to a runaway application.
 
 ### Opcodes Potentially Resulting in Out-Of-Bounds Accesses
 
@@ -160,6 +160,7 @@ The version number (second 32-bit word) of a SPIR-V module must be one of the fo
 All capabilities declared by **OpCapability** instructions (located after the header in a SPIR-V module) must be one of the following:
 
 
+[//]: # (No **SampledBuffer** or **ImageBuffer**. See https://github.com/gpuweb/gpuweb/issues/162)
 
 *   **Matrix**
 *   **Shader**
@@ -167,8 +168,6 @@ All capabilities declared by **OpCapability** instructions (located after the he
 *   **Image1D**
 *   **DerivativeControl**
 *   **ImageQuery**
-*   **SampledBuffer**? (needs investigation)
-*   **ImageBuffer**? (needs investigation)
 *   **VulkanMemoryModelKHR**
 *   [Notably missing: **Linkage**, **Kernel**, …]
 
@@ -209,7 +208,10 @@ There must be at least one **OpEntryPoint** in a module, and each one present mu
 *   The complete call graph rooted by the entry point must
     *   be present in the module (the **Linkage** capability is not valid, so there are no partially linked modules), and
     *   not contain any cycles (no recursion, even statically).
-*   The _Name_ operand must be a string of length [TBD, TBD] and cannot be used by any other **OpEntryPoint** in the same module.  All entry-point names in a module must be unique module these rules. TBD do we want case sensitive?
+*   The _Name_ of an **OpEntryPoint**
+    * cannot be used by any other **OpEntryPoint** in the same module.
+    * has its length bounded due to SPIR-V instruction length limits.
+    * may be limited by the WebGPU specification. [WHLSL Issue 292](https://github.com/gpuweb/WHLSL/issues/292)
 
 The execution model declared by each **OpEntryPoint** must be one of the following:
 
@@ -233,7 +235,8 @@ All execution modes declared by **OpExecutionMode** must be one of the following
 *   **DepthUnchanged**
 *   **LocalSize**
 *   **LocalSizeHint**
-*   … TBD
+
+[//]: # (No subgroups support. Useful, but not widely available?)
 
 
 ### Debug Instructions
@@ -245,11 +248,16 @@ All debug instructions must be stripped.
 
 OpDecorationGroup, OpGroupDecorate, OpGroupMemberDecorate are not allowed.
 
-Only the following decorations are valid (TBD):
+Only the following decorations are valid:
 
 
 
-*   TBD: **RelaxedPrecision**
+[//]: # (No **RelaxedPrecision**: WHLSL doesn't have min16float min10float)
+[//]: # (No **Sample**: WebGPU does not support sample rate shading)
+[//]: # (No **Invariant**: Assume WebGPU MVP does not support this for complexity reasons)
+[//]: # (No **Coherent**: Assume Vulkan memory model)
+[//]: # (No **NoSignedWrap**, **NoUnsignedWrap**: Although useful, they introduce undefined behaviour cases)
+
 *   **SpecId**
 *   **Block**
 *   **RowMajor**
@@ -260,30 +268,23 @@ Only the following decorations are valid (TBD):
 *   **NoPerspective**, only in the **Input** storage class and the **Fragment** execution model
 *   **Flat**, only in the **Input** storage class and the **Fragment** execution model
 *   **Centroid**
-*   TBD: **Sample**
-*   TBD: **Invariant**
-*   TBD: **Restrict**
-*   TBD: **Aliased**
-*   TBD: **Volatile**
-*   TBD: **Coherent**
+*   **Restrict**
+*   **Aliased**
 *   **NonWritable**
 *   **NonReadable**
-*   TBD: **Uniform**
+*   **Uniform**
 *   **Location**, required for all **Input** and **Output**, see "Interface" section below
 *   **Component**
 *   **Index**
 *   **Binding**
 *   **DescriptorSet**
 *   **Offset** (also see "Layouts" below)
-*   TBD: **FPRoundingMode**
 *   **NoContraction**
-*   **NoSignedWrap**
-*   **NoUnsignedWrap**
 
 
 #### Built-In Variables
 
-When decorating with the **Builtin** decoration, only the following are valid, and these are further restricted as indicated by the table. (Table is TBD)
+When decorating with the **Builtin** decoration, only the following are valid, and these are further restricted as indicated by the table.
 
 
 <table>
@@ -407,16 +408,6 @@ When decorating with the **Builtin** decoration, only the following are valid, a
    <td>
    </td>
   </tr>
-  <tr>
-   <td>TBD
-   </td>
-   <td>
-   </td>
-   <td>
-   </td>
-   <td>
-   </td>
-  </tr>
 </table>
 
 
@@ -430,14 +421,12 @@ Scalar floating-point types (**OpTypeFloat**) must have one of the following wid
 
 
 *   32 bits
-*   TBD
 
 Scalar integer types (**OpTypeInteger**) must have one of the following widths:
 
 
 
 *   32 bits
-*   TBD
 
 Vector types must have one of the following number of components:
 
@@ -466,9 +455,9 @@ Storage Class must be one of the following:
 *   **Output**
 *   **Image**
 *   **Workgroup**
+*   **PushConstant**, if WebGPU supports them: [WebGPU Issue 75](https://github.com/gpuweb/gpuweb/issues/75)
 *   **Private**
 *   **Function**
-*   TBD: **PushConstant?**
 
 **OpTypeRunTimeArray** is only for the last member of a block in the **StorageBuffer** storage class.
 
@@ -501,11 +490,11 @@ Each block **_B_** in a function must satisfy one of the following rules:
 **Scope** when used for memory must be one of:
 
 
+[//]: # (No **Device** since that's optional for Vulkan memory model.  In single-device configurations QueueFamilyKHR is the same as Device)
 
 *   **Workgroup**
 *   **Subgroup**
 *   **QueueFamilyKHR**
-*   TBD **Invocation? Device?**
 
 **Scope** when used for execution must be one of:
 
@@ -546,15 +535,17 @@ TBD: Consider a similar simplification for image accesses.
 
 #### Initializers
 
-Variable declarations that include initializers must be for one of the following storage classes:
-
-
+If a variable declaration has an initializer, then the variable must be in one of the following storage classes:
 
 *   **Output**
 *   **Private**
 *   **Function**
 
-TBD: Require variables in Output, Private, and Function storage classes to have initializers (or clearly be unconditionally set?).
+All variables in the following storage classes must have an initializer:
+
+*   **Output**
+*   **Private**
+*   **Function**
 
 
 #### Precision and Accuracy
@@ -570,7 +561,7 @@ TBD: Require variables in Output, Private, and Function storage classes to have 
 *   Error bounds (ULP)
 *   … TBD
 
-TBD: Fusing and reassociation of floating point operations is allowed when those instructions are not decorated with **NoContraction**.
+Fusing and reassociation of floating point operations is allowed when those instructions are not decorated with **NoContraction**.
 
 
 ### Instructions
@@ -586,12 +577,9 @@ TBD: Fusing and reassociation of floating point operations is allowed when those
 
 ### Images and Samplers
 
-[List all rules about what formats, combinations, types, etc. are used. Note this is mostly SPIR-V independent.]
+TBD: List rules for supported formats, combinations, types, etc.  This is mostly independent of SPIR-V.
 
-
-
-*   TBD
-*   ...
+See [WebGPU Issue 163](https://github.com/gpuweb/gpuweb/issues/163)
 
 
 ### Interface
@@ -604,7 +592,7 @@ Interfaces discussed here are those that are:
 *   between the application and the **Input** storage class to the first shader stage in the pipeline
 *   between the **Output** storage class of the last tages and the application
 *   between the application and the shader stages through buffers: storage buffer blocks and uniform buffer blocks
-*   Push constants?
+*   Push constants, if WebGPU supports them: [WebGPU Issue 75](https://github.com/gpuweb/gpuweb/issues/75)
 
 Each such interface must match, via the following matching rules:
 
@@ -618,7 +606,7 @@ Each such interface must match, via the following matching rules:
 *   See 14.2. "Vertex Input Interface" in the Vulkan spec.
 *   See 14.3. "Fragment Output Interface" in the Vulkan spec.
 *   Attachment interface?  14.4
-*   Push Constant? 14.5.1
+*   Push Constant 14.5.1, if WebGPU supports them: [WebGPU Issue 75](https://github.com/gpuweb/gpuweb/issues/75)
 *   See 14.5.2. "Descriptor Set Interface" and 14.5.3. "DescriptorSet and Binding Assignment"
 
 
