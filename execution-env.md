@@ -570,7 +570,7 @@ Fusing and reassociation of floating point operations is allowed when those inst
 
 *   OpUndef is not allowed.
 *   OpVectorShuffle may not have a component literal with value 0xFFFFFFFF.
-*   Supported and unsupported OpCodes are iterated in [Appendix A](#A:-Supported-OpCodes) and [Appendix B](#B:-Unsupported-OpCodes).
+*   Supported and unsupported OpCodes are iterated in [Appendix A](#a-supported-opcodes) and [Appendix B](#b-unsupported-opcodes).
 
 
 ## Data Types and Layouts
@@ -717,6 +717,12 @@ a multiple of _16_.
 Note: The **std430** in GLSL satisfies these rules.
 
 [//]: # (Assume no scalar block aligment)
+
+# References
+<a name="vulkan1.1"
+href="https://www.khronos.org/registry/vulkan/specs/1.1/html/vkspec.html">Vulkan Specification, version 1.1</a>, The Khronos Group Inc.  Portions copied and modified under Creative Commons Attribution 4.0 International License.  See terms at [Vulkan-Docs/COPYING.md](https://github.com/KhronosGroup/Vulkan-Docs/blob/master/COPYING.md)
+
+[Vulkan 1.1]: #vulkan1.1
 
 # Appendices
 
@@ -2989,10 +2995,3 @@ Note: The **std430** in GLSL satisfies these rules.
    </td>
   </tr>
 </Table>
-
-
-# References
-<a name="vulkan1.1"
-href="https://www.khronos.org/registry/vulkan/specs/1.1/html/vkspec.html">Vulkan Specification, version 1.1</a>, The Khronos Group Inc.  Portions copied and modified under Creative Commons Attribution 4.0 International License.  See terms at [Vulkan-Docs/COPYING.md](https://github.com/KhronosGroup/Vulkan-Docs/blob/master/COPYING.md)
-
-[Vulkan 1.1]: #vulkan1.1
