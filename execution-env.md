@@ -1150,11 +1150,39 @@ href="https://www.khronos.org/registry/vulkan/specs/1.1/html/vkspec.html">Vulkan
    </td>
   </tr>
   <tr>
+   <td>103
+   </td>
+   <td>OpImageQuerySizeLod
+   </td>
+  </tr>
+  <tr>
+  <tr>
+   <td>104
+   </td>
+   <td>OpImageQuerySize
+   </td>
+  </tr>
+  <tr>
+  <tr>
    <td>105
    </td>
    <td>OpImageQueryLod
    </td>
   </tr>
+  <tr>
+   <td>106
+   </td>
+   <td>OpImageQueryLevels
+   </td>
+  </tr>
+  <tr>
+  <tr>
+   <td>107
+   </td>
+   <td>OpImageQuerySamples
+   </td>
+  </tr>
+  <tr>
   <tr>
    <td>109
    </td>
