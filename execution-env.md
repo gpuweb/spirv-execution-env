@@ -287,128 +287,19 @@ Only the following decorations are valid:
 When decorating with the **Builtin** decoration, only the following are valid, and these are further restricted as indicated by the table.
 
 
-<table>
-  <tr>
-   <td><strong>Builtin</strong>
-   </td>
-   <td>Allowed types
-   </td>
-   <td>Allowed execution models for the <strong>Input</strong> storage class
-   </td>
-   <td>Allowed execution models for the <strong>Output </strong>storage class
-   </td>
-  </tr>
-  <tr>
-   <td><strong>Position</strong>
-   </td>
-   <td>Vector of 4 32-bit floats
-   </td>
-   <td>
-   </td>
-   <td><strong>Vertex</strong>
-   </td>
-  </tr>
-  <tr>
-   <td><strong>VertexIndex</strong>
-   </td>
-   <td>Scalar 32-bit integer
-   </td>
-   <td><strong>Vertex</strong>
-   </td>
-   <td>
-   </td>
-  </tr>
-  <tr>
-   <td><strong>InstanceIndex</strong>
-   </td>
-   <td>Scalar 32-bit integer
-   </td>
-   <td><strong>Vertex</strong>
-   </td>
-   <td>
-   </td>
-  </tr>
-  <tr>
-   <td><strong>FrontFacing</strong>
-   </td>
-   <td>Boolean
-   </td>
-   <td><strong>Fragment</strong>
-   </td>
-   <td>
-   </td>
-  </tr>
-  <tr>
-   <td><strong>FragCoord</strong>
-   </td>
-   <td>Vector of 4 32-bit floats
-   </td>
-   <td><strong>Fragment</strong>
-   </td>
-   <td>
-   </td>
-  </tr>
-  <tr>
-   <td><strong>FragDepth</strong>
-   </td>
-   <td>32-bit float
-   </td>
-   <td>
-   </td>
-   <td><strong>Fragment</strong>
-   </td>
-  </tr>
-  <tr>
-   <td><strong>NumWorkgroups</strong>
-   </td>
-   <td>Vector of 3 32-bit ints
-   </td>
-   <td><strong>GLCompute</strong>
-   </td>
-   <td>
-   </td>
-  </tr>
-  <tr>
-   <td><strong>WorkgroupSize</strong>
-   </td>
-   <td>Vector of 3 32-bit ints
-   </td>
-   <td><strong>GLCompute</strong>
-   </td>
-   <td>
-   </td>
-  </tr>
-  <tr>
-   <td><strong>LocalInvocationId</strong>
-   </td>
-   <td>Vector of 3 32-bit ints
-   </td>
-   <td><strong>GLCompute</strong>
-   </td>
-   <td>
-   </td>
-  </tr>
-  <tr>
-   <td><strong>GlobalInvocationId</strong>
-   </td>
-   <td>Vector of 3 32-bit ints
-   </td>
-   <td><strong>GLCompute</strong>
-   </td>
-   <td>
-   </td>
-  </tr>
-  <tr>
-   <td><strong>LocalInvocationIndex</strong>
-   </td>
-   <td>32-bit int
-   </td>
-   <td><strong>GLCompute</strong>
-   </td>
-   <td>
-   </td>
-  </tr>
-</table>
+Builtin | Allowed types | Allowed execution models for the Input storage class | Allowed execution models for the Output storage class
+--------|---------------|------------------------------------------------------|------------------------------------------------------
+**Position** | Vector of 4 32-bit floats |  | **Vertex**
+**VertexIndex** | Scalar 32-bit integer | **Vertex** |
+**InstanceIndex** | Scalar 32-bit integer | **Vertex** |
+**FrontFacing** | Boolean | **Fragment** |
+**FragCoord** | Vector of 4 32-bit floats | **Fragment** |
+**FragDepth** | 32-bit float |  | **Fragment**
+**NumWorkgroups** | Vector of 3 32-bit ints | **GLCompute** |
+**WorkgroupSize** | Vector of 3 32-bit ints | **GLCompute** |
+**LocalInvocationId** | Vector of 3 32-bit ints | **GLCompute** |
+**GlobalInvocationId** | Vector of 3 32-bit ints | **GLCompute** |
+**LocalInvocationIndex** | 32-bit int | **GLCompute** |
 
 
 Full semantic descriptions of what these mean, how the behave, when they have what values, etc. is part of the WebGPU specification proper, not this specification.
@@ -728,1173 +619,199 @@ href="https://www.khronos.org/registry/vulkan/specs/1.1/html/vkspec.html">Vulkan
 # Appendices
 
 ## A: Supported OpCodes
-<table>
-  <tr>
-   <td><strong>OpCode</strong>
-   </td>
-   <td><strong>Name</strong>
-   </td>
-  </tr>
-  <tr>
-   <td>0
-   </td>
-   <td>OpNop
-   </td>
-  </tr>
-  <tr>
-   <td>10
-   </td>
-   <td>OpExtension
-   </td>
-  </tr>
-  <tr>
-   <td>11
-   </td>
-   <td>OpExtInstImport
-   </td>
-  </tr>
-  <tr>
-   <td>12
-   </td>
-   <td>OpExtInst
-   </td>
-  </tr>
-  <tr>
-   <td>14
-   </td>
-   <td>OpMemoryModel
-   </td>
-  </tr>
-  <tr>
-   <td>15
-   </td>
-   <td>OpEntryPoint
-   </td>
-  </tr>
-  <tr>
-   <td>16
-   </td>
-   <td>OpExecutionMode
-   </td>
-  </tr>
-  <tr>
-   <td>17
-   </td>
-   <td>OpCapability
-   </td>
-  </tr>
-  <tr>
-   <td>19
-   </td>
-   <td>OpTypeVoid
-   </td>
-  </tr>
-  <tr>
-   <td>20
-   </td>
-   <td>OpTypeBool
-   </td>
-  </tr>
-  <tr>
-   <td>21
-   </td>
-   <td>OpTypeInt
-   </td>
-  </tr>
-  <tr>
-   <td>22
-   </td>
-   <td>OpTypeFloat
-   </td>
-  </tr>
-  <tr>
-   <td>23
-   </td>
-   <td>OpTypeVector
-   </td>
-  </tr>
-  <tr>
-   <td>24
-   </td>
-   <td>OpTypeMatrix
-   </td>
-  </tr>
-  <tr>
-   <td>25
-   </td>
-   <td>OpTypeImage
-   </td>
-  </tr>
-  <tr>
-   <td>26
-   </td>
-   <td>OpTypeSampler
-   </td>
-  </tr>
-  <tr>
-   <td>27
-   </td>
-   <td>OpTypeSampledImage
-   </td>
-  </tr>
-  <tr>
-   <td>28
-   </td>
-   <td>OpTypeArray
-   </td>
-  </tr>
-  <tr>
-   <td>29
-   </td>
-   <td>OpTypeRuntimeArray
-   </td>
-  </tr>
-  <tr>
-   <td>30
-   </td>
-   <td>OpTypeStruct
-   </td>
-  </tr>
-  <tr>
-   <td>32
-   </td>
-   <td>OpTypePointer
-   </td>
-  </tr>
-  <tr>
-   <td>33
-   </td>
-   <td>OpTypeFunction
-   </td>
-  </tr>
-  <tr>
-   <td>41
-   </td>
-   <td>OpConstantTrue
-   </td>
-  </tr>
-  <tr>
-   <td>42
-   </td>
-   <td>OpConstantFalse
-   </td>
-  </tr>
-  <tr>
-   <td>43
-   </td>
-   <td>OpConstant
-   </td>
-  </tr>
-  <tr>
-   <td>44
-   </td>
-   <td>OpConstantComposite
-   </td>
-  </tr>
-  <tr>
-   <td>46
-   </td>
-   <td>OpConstantNull
-   </td>
-  </tr>
-  <tr>
-   <td>48
-   </td>
-   <td>OpSpecConstantTrue
-   </td>
-  </tr>
-  <tr>
-   <td>49
-   </td>
-   <td>OpSpecConstantFalse
-   </td>
-  </tr>
-  <tr>
-   <td>50
-   </td>
-   <td>OpSpecConstant
-   </td>
-  </tr>
-  <tr>
-   <td>51
-   </td>
-   <td>OpSpecConstantComposite
-   </td>
-  </tr>
-  <tr>
-   <td>52
-   </td>
-   <td>OpSpecConstantOp
-   </td>
-  </tr>
-  <tr>
-   <td>54
-   </td>
-   <td>OpFunction
-   </td>
-  </tr>
-  <tr>
-   <td>55
-   </td>
-   <td>OpFunctionParameter
-   </td>
-  </tr>
-  <tr>
-   <td>56
-   </td>
-   <td>OpFunctionEnd
-   </td>
-  </tr>
-  <tr>
-   <td>57
-   </td>
-   <td>OpFunctionCall
-   </td>
-  </tr>
-  <tr>
-   <td>59
-   </td>
-   <td>OpVariable
-   </td>
-  </tr>
-  <tr>
-   <td>60
-   </td>
-   <td>OpImageTexelPointer
-   </td>
-  </tr>
-  <tr>
-   <td>61
-   </td>
-   <td>OpLoad
-   </td>
-  </tr>
-  <tr>
-   <td>62
-   </td>
-   <td>OpStore
-   </td>
-  </tr>
-  <tr>
-   <td>63
-   </td>
-   <td>OpCopyMemory
-   </td>
-  </tr>
-  <tr>
-   <td>65
-   </td>
-   <td>OpAccessChain
-   </td>
-  </tr>
-  <tr>
-   <td>66
-   </td>
-   <td>OpInBoundsAccessChain
-   </td>
-  </tr>
-  <tr>
-   <td>68
-   </td>
-   <td>OpArrayLength
-   </td>
-  </tr>
-  <tr>
-   <td>71
-   </td>
-   <td>OpDecorate
-   </td>
-  </tr>
-  <tr>
-   <td>72
-   </td>
-   <td>OpMemberDecorate
-   </td>
-  </tr>
-  <tr>
-   <td>77
-   </td>
-   <td>OpVectorExtractDynamic
-   </td>
-  </tr>
-  <tr>
-   <td>78
-   </td>
-   <td>OpVectorInsertDynamic
-   </td>
-  </tr>
-  <tr>
-   <td>79
-   </td>
-   <td>OpVectorShuffle
-   </td>
-  </tr>
-  <tr>
-   <td>80
-   </td>
-   <td>OpCompositeConstruct
-   </td>
-  </tr>
-  <tr>
-   <td>81
-   </td>
-   <td>OpCompositeExtract
-   </td>
-  </tr>
-  <tr>
-   <td>82
-   </td>
-   <td>OpCompositeInsert
-   </td>
-  </tr>
-  <tr>
-   <td>83
-   </td>
-   <td>OpCopyObject
-   </td>
-  </tr>
-  <tr>
-   <td>84
-   </td>
-   <td>OpTranspose
-   </td>
-  </tr>
-  <tr>
-   <td>86
-   </td>
-   <td>OpSampledImage
-   </td>
-  </tr>
-  <tr>
-   <td>87
-   </td>
-   <td>OpImageSampleImplicitLod
-   </td>
-  </tr>
-  <tr>
-   <td>88
-   </td>
-   <td>OpImageSampleExplicitLod
-   </td>
-  </tr>
-  <tr>
-   <td>89
-   </td>
-   <td>OpImageSampleDrefImplicitLod
-   </td>
-  </tr>
-  <tr>
-   <td>90
-   </td>
-   <td>OpImageSampleDrefExplicitLod
-   </td>
-  </tr>
-  <tr>
-   <td>91
-   </td>
-   <td>OpImageSampleProjImplicitLod
-   </td>
-  </tr>
-  <tr>
-   <td>92
-   </td>
-   <td>OpImageSampleProjExplicitLod
-   </td>
-  </tr>
-  <tr>
-   <td>93
-   </td>
-   <td>OpImageSampleProjDrefImplicitLod
-   </td>
-  </tr>
-  <tr>
-   <td>94
-   </td>
-   <td>OpImageSampleProjDrefExplicitLod
-   </td>
-  </tr>
-  <tr>
-   <td>95
-   </td>
-   <td>OpImageFetch
-   </td>
-  </tr>
-  <tr>
-   <td>96
-   </td>
-   <td>OpImageGather
-   </td>
-  </tr>
-  <tr>
-   <td>97
-   </td>
-   <td>OpImageDrefGather
-   </td>
-  </tr>
-  <tr>
-   <td>98
-   </td>
-   <td>OpImageRead
-   </td>
-  </tr>
-  <tr>
-   <td>99
-   </td>
-   <td>OpImageWrite
-   </td>
-  </tr>
-  <tr>
-   <td>100
-   </td>
-   <td>OpImage
-   </td>
-  </tr>
-  <tr>
-   <td>103
-   </td>
-   <td>OpImageQuerySizeLod
-   </td>
-  </tr>
-  <tr>
-  <tr>
-   <td>104
-   </td>
-   <td>OpImageQuerySize
-   </td>
-  </tr>
-  <tr>
-  <tr>
-   <td>105
-   </td>
-   <td>OpImageQueryLod
-   </td>
-  </tr>
-  <tr>
-   <td>106
-   </td>
-   <td>OpImageQueryLevels
-   </td>
-  </tr>
-  <tr>
-  <tr>
-   <td>107
-   </td>
-   <td>OpImageQuerySamples
-   </td>
-  </tr>
-  <tr>
-  <tr>
-   <td>109
-   </td>
-   <td>OpConvertFToU
-   </td>
-  </tr>
-  <tr>
-   <td>110
-   </td>
-   <td>OpConvertFToS
-   </td>
-  </tr>
-  <tr>
-   <td>111
-   </td>
-   <td>OpConvertSToF
-   </td>
-  </tr>
-  <tr>
-   <td>112
-   </td>
-   <td>OpConvertUToF
-   </td>
-  </tr>
-  <tr>
-   <td>113
-   </td>
-   <td>OpUConvert
-   </td>
-  </tr>
-  <tr>
-   <td>114
-   </td>
-   <td>OpSConvert
-   </td>
-  </tr>
-  <tr>
-   <td>115
-   </td>
-   <td>OpFConvert
-   </td>
-  </tr>
-  <tr>
-   <td>116
-   </td>
-   <td>OpQuantizeToF16
-   </td>
-  </tr>
-  <tr>
-   <td>124
-   </td>
-   <td>OpBitcast
-   </td>
-  </tr>
-  <tr>
-   <td>126
-   </td>
-   <td>OpSNegate
-   </td>
-  </tr>
-  <tr>
-   <td>127
-   </td>
-   <td>OpFNegate
-   </td>
-  </tr>
-  <tr>
-   <td>128
-   </td>
-   <td>OpIAdd
-   </td>
-  </tr>
-  <tr>
-   <td>129
-   </td>
-   <td>OpFAdd
-   </td>
-  </tr>
-  <tr>
-   <td>130
-   </td>
-   <td>OpISub
-   </td>
-  </tr>
-  <tr>
-   <td>131
-   </td>
-   <td>OpFSub
-   </td>
-  </tr>
-  <tr>
-   <td>132
-   </td>
-   <td>OpIMul
-   </td>
-  </tr>
-  <tr>
-   <td>133
-   </td>
-   <td>OpFMul
-   </td>
-  </tr>
-  <tr>
-   <td>134
-   </td>
-   <td>OpUDiv
-   </td>
-  </tr>
-  <tr>
-   <td>135
-   </td>
-   <td>OpSDiv
-   </td>
-  </tr>
-  <tr>
-   <td>136
-   </td>
-   <td>OpFDiv
-   </td>
-  </tr>
-  <tr>
-   <td>137
-   </td>
-   <td>OpUMod
-   </td>
-  </tr>
-  <tr>
-   <td>138
-   </td>
-   <td>OpSRem
-   </td>
-  </tr>
-  <tr>
-   <td>139
-   </td>
-   <td>OpSMod
-   </td>
-  </tr>
-  <tr>
-   <td>140
-   </td>
-   <td>OpFRem
-   </td>
-  </tr>
-  <tr>
-   <td>141
-   </td>
-   <td>OpFMod
-   </td>
-  </tr>
-  <tr>
-   <td>142
-   </td>
-   <td>OpVectorTimesScalar
-   </td>
-  </tr>
-  <tr>
-   <td>143
-   </td>
-   <td>OpMatrixTimesScalar
-   </td>
-  </tr>
-  <tr>
-   <td>144
-   </td>
-   <td>OpVectorTimesMatrix
-   </td>
-  </tr>
-  <tr>
-   <td>145
-   </td>
-   <td>OpMatrixTimesVector
-   </td>
-  </tr>
-  <tr>
-   <td>146
-   </td>
-   <td>OpMatrixTimesMatrix
-   </td>
-  </tr>
-  <tr>
-   <td>147
-   </td>
-   <td>OpOuterProduct
-   </td>
-  </tr>
-  <tr>
-   <td>148
-   </td>
-   <td>OpDot
-   </td>
-  </tr>
-  <tr>
-   <td>149
-   </td>
-   <td>OpIAddCarry
-   </td>
-  </tr>
-  <tr>
-   <td>150
-   </td>
-   <td>OpISubBorrow
-   </td>
-  </tr>
-  <tr>
-   <td>151
-   </td>
-   <td>OpUMulExtended
-   </td>
-  </tr>
-  <tr>
-   <td>152
-   </td>
-   <td>OpSMulExtended
-   </td>
-  </tr>
-  <tr>
-   <td>154
-   </td>
-   <td>OpAny
-   </td>
-  </tr>
-  <tr>
-   <td>155
-   </td>
-   <td>OpAll
-   </td>
-  </tr>
-  <tr>
-   <td>156
-   </td>
-   <td>OpIsNan
-   </td>
-  </tr>
-  <tr>
-   <td>157
-   </td>
-   <td>OpIsInf
-   </td>
-  </tr>
-  <tr>
-   <td>164
-   </td>
-   <td>OpLogicalEqual
-   </td>
-  </tr>
-  <tr>
-   <td>165
-   </td>
-   <td>OpLogicalNotEqual
-   </td>
-  </tr>
-  <tr>
-   <td>166
-   </td>
-   <td>OpLogicalOr
-   </td>
-  </tr>
-  <tr>
-   <td>167
-   </td>
-   <td>OpLogicalAnd
-   </td>
-  </tr>
-  <tr>
-   <td>168
-   </td>
-   <td>OpLogicalNot
-   </td>
-  </tr>
-  <tr>
-   <td>169
-   </td>
-   <td>OpSelect
-   </td>
-  </tr>
-  <tr>
-   <td>170
-   </td>
-   <td>OpIEqual
-   </td>
-  </tr>
-  <tr>
-   <td>171
-   </td>
-   <td>OpINotEqual
-   </td>
-  </tr>
-  <tr>
-   <td>172
-   </td>
-   <td>OpUGreaterThan
-   </td>
-  </tr>
-  <tr>
-   <td>173
-   </td>
-   <td>OpSGreaterThan
-   </td>
-  </tr>
-  <tr>
-   <td>174
-   </td>
-   <td>OpUGreaterThanEqual
-   </td>
-  </tr>
-  <tr>
-   <td>175
-   </td>
-   <td>OpSGreaterThanEqual
-   </td>
-  </tr>
-  <tr>
-   <td>176
-   </td>
-   <td>OpULessThan
-   </td>
-  </tr>
-  <tr>
-   <td>177
-   </td>
-   <td>OpSLessThan
-   </td>
-  </tr>
-  <tr>
-   <td>178
-   </td>
-   <td>OpULessThanEqual
-   </td>
-  </tr>
-  <tr>
-   <td>179
-   </td>
-   <td>OpSLessThanEqual
-   </td>
-  </tr>
-  <tr>
-   <td>180
-   </td>
-   <td>OpFOrdEqual
-   </td>
-  </tr>
-  <tr>
-   <td>181
-   </td>
-   <td>OpFUnordEqual
-   </td>
-  </tr>
-  <tr>
-   <td>182
-   </td>
-   <td>OpFOrdNotEqual
-   </td>
-  </tr>
-  <tr>
-   <td>183
-   </td>
-   <td>OpFUnordNotEqual
-   </td>
-  </tr>
-  <tr>
-   <td>184
-   </td>
-   <td>OpFOrdLessThan
-   </td>
-  </tr>
-  <tr>
-   <td>185
-   </td>
-   <td>OpFUnordLessThan
-   </td>
-  </tr>
-  <tr>
-   <td>186
-   </td>
-   <td>OpFOrdGreaterThan
-   </td>
-  </tr>
-  <tr>
-   <td>187
-   </td>
-   <td>OpFUnordGreaterThan
-   </td>
-  </tr>
-  <tr>
-   <td>188
-   </td>
-   <td>OpFOrdLessThanEqual
-   </td>
-  </tr>
-  <tr>
-   <td>189
-   </td>
-   <td>OpFUnordLessThanEqual
-   </td>
-  </tr>
-  <tr>
-   <td>190
-   </td>
-   <td>OpFOrdGreaterThanEqual
-   </td>
-  </tr>
-  <tr>
-   <td>191
-   </td>
-   <td>OpFUnordGreaterThanEqual
-   </td>
-  </tr>
-  <tr>
-   <td>194
-   </td>
-   <td>OpShiftRightLogical
-   </td>
-  </tr>
-  <tr>
-   <td>195
-   </td>
-   <td>OpShiftRightArithmetic
-   </td>
-  </tr>
-  <tr>
-   <td>196
-   </td>
-   <td>OpShiftLeftLogical
-   </td>
-  </tr>
-  <tr>
-   <td>197
-   </td>
-   <td>OpBitwiseOr
-   </td>
-  </tr>
-  <tr>
-   <td>198
-   </td>
-   <td>OpBitwiseXor
-   </td>
-  </tr>
-  <tr>
-   <td>199
-   </td>
-   <td>OpBitwiseAnd
-   </td>
-  </tr>
-  <tr>
-   <td>200
-   </td>
-   <td>OpNot
-   </td>
-  </tr>
-  <tr>
-   <td>201
-   </td>
-   <td>OpBitFieldInsert
-   </td>
-  </tr>
-  <tr>
-   <td>202
-   </td>
-   <td>OpBitFieldSExtract
-   </td>
-  </tr>
-  <tr>
-   <td>203
-   </td>
-   <td>OpBitFieldUExtract
-   </td>
-  </tr>
-  <tr>
-   <td>204
-   </td>
-   <td>OpBitReverse
-   </td>
-  </tr>
-  <tr>
-   <td>205
-   </td>
-   <td>OpBitCount
-   </td>
-  </tr>
-  <tr>
-   <td>207
-   </td>
-   <td>OpDPdx
-   </td>
-  </tr>
-  <tr>
-   <td>208
-   </td>
-   <td>OpDPdy
-   </td>
-  </tr>
-  <tr>
-   <td>209
-   </td>
-   <td>OpFwidth
-   </td>
-  </tr>
-  <tr>
-   <td>210
-   </td>
-   <td>OpDPdxFine
-   </td>
-  </tr>
-  <tr>
-   <td>211
-   </td>
-   <td>OpDPdyFine
-   </td>
-  </tr>
-  <tr>
-   <td>212
-   </td>
-   <td>OpFwidthFine
-   </td>
-  </tr>
-  <tr>
-   <td>213
-   </td>
-   <td>OpDPdxCoarse
-   </td>
-  </tr>
-  <tr>
-   <td>214
-   </td>
-   <td>OpDPdyCoarse
-   </td>
-  </tr>
-  <tr>
-   <td>215
-   </td>
-   <td>OpFwidthCoarse
-   </td>
-  </tr>
-  <tr>
-   <td>224
-   </td>
-   <td>OpControlBarrier
-   </td>
-  </tr>
-  <tr>
-   <td>225
-   </td>
-   <td>OpMemoryBarrier
-   </td>
-  </tr>
-  <tr>
-   <td>227
-   </td>
-   <td>OpAtomicLoad
-   </td>
-  </tr>
-  <tr>
-   <td>228
-   </td>
-   <td>OpAtomicStore
-   </td>
-  </tr>
-  <tr>
-   <td>229
-   </td>
-   <td>OpAtomicExchange
-   </td>
-  </tr>
-  <tr>
-   <td>230
-   </td>
-   <td>OpAtomicCompareExchange
-   </td>
-  </tr>
-  <tr>
-   <td>232
-   </td>
-   <td>OpAtomicIIncrement
-   </td>
-  </tr>
-  <tr>
-   <td>233
-   </td>
-   <td>OpAtomicIDecrement
-   </td>
-  </tr>
-  <tr>
-   <td>234
-   </td>
-   <td>OpAtomicIAdd
-   </td>
-  </tr>
-  <tr>
-   <td>235
-   </td>
-   <td>OpAtomicISub
-   </td>
-  </tr>
-  <tr>
-   <td>236
-   </td>
-   <td>OpAtomicSMin
-   </td>
-  </tr>
-  <tr>
-   <td>237
-   </td>
-   <td>OpAtomicUMin
-   </td>
-  </tr>
-  <tr>
-   <td>238
-   </td>
-   <td>OpAtomicSMax
-   </td>
-  </tr>
-  <tr>
-   <td>239
-   </td>
-   <td>OpAtomicUMax
-   </td>
-  </tr>
-  <tr>
-   <td>240
-   </td>
-   <td>OpAtomicAnd
-   </td>
-  </tr>
-  <tr>
-   <td>241
-   </td>
-   <td>OpAtomicOr
-   </td>
-  </tr>
-  <tr>
-   <td>242
-   </td>
-   <td>OpAtomicXor
-   </td>
-  </tr>
-  <tr>
-   <td>245
-   </td>
-   <td>OpPhi
-   </td>
-  </tr>
-  <tr>
-   <td>246
-   </td>
-   <td>OpLoopMerge
-   </td>
-  </tr>
-  <tr>
-   <td>247
-   </td>
-   <td>OpSelectionMerge
-   </td>
-  </tr>
-  <tr>
-   <td>248
-   </td>
-   <td>OpLabel
-   </td>
-  </tr>
-  <tr>
-   <td>249
-   </td>
-   <td>OpBranch
-   </td>
-  </tr>
-  <tr>
-   <td>250
-   </td>
-   <td>OpBranchConditional
-   </td>
-  </tr>
-  <tr>
-   <td>251
-   </td>
-   <td>OpSwitch
-   </td>
-  </tr>
-  <tr>
-   <td>252
-   </td>
-   <td>OpKill
-   </td>
-  </tr>
-  <tr>
-   <td>253
-   </td>
-   <td>OpReturn
-   </td>
-  </tr>
-  <tr>
-   <td>254
-   </td>
-   <td>OpReturnValue
-   </td>
-  </tr>
-  <tr>
-   <td>255
-   </td>
-   <td>OpUnreachable
-   </td>
-  </tr>
-  <tr>
-   <td>331
-   </td>
-   <td>OpExecutionModeId
-   </td>
-  </tr>
-  <tr>
-   <td>332
-   </td>
-   <td>OpDecorateId
-   </td>
-  </tr>
-</table>
+
+OpCode | Name
+-------|-----
+0 | OpNop
+10 | OpExtension
+11 | OpExtInstImport
+12 | OpExtInst
+14 | OpMemoryModel
+15 | OpEntryPoint
+16 | OpExecutionMode
+17 | OpCapability
+19 | OpTypeVoid
+20 | OpTypeBool
+21 | OpTypeInt
+22 | OpTypeFloat
+23 | OpTypeVector
+24 | OpTypeMatrix
+25 | OpTypeImage
+26 | OpTypeSampler
+27 | OpTypeSampledImage
+28 | OpTypeArray
+29 | OpTypeRuntimeArray
+30 | OpTypeStruct
+32 | OpTypePointer
+33 | OpTypeFunction
+41 | OpConstantTrue
+42 | OpConstantFalse
+43 | OpConstant
+44 | OpConstantComposite
+46 | OpConstantNull
+48 | OpSpecConstantTrue
+49 | OpSpecConstantFalse
+50 | OpSpecConstant
+51 | OpSpecConstantComposite
+52 | OpSpecConstantOp
+54 | OpFunction
+55 | OpFunctionParameter
+56 | OpFunctionEnd
+57 | OpFunctionCall
+59 | OpVariable
+60 | OpImageTexelPointer
+61 | OpLoad
+62 | OpStore
+63 | OpCopyMemory
+65 | OpAccessChain
+66 | OpInBoundsAccessChain
+68 | OpArrayLength
+71 | OpDecorate
+72 | OpMemberDecorate
+77 | OpVectorExtractDynamic
+78 | OpVectorInsertDynamic
+79 | OpVectorShuffle
+80 | OpCompositeConstruct
+81 | OpCompositeExtract
+82 | OpCompositeInsert
+83 | OpCopyObject
+84 | OpTranspose
+86 | OpSampledImage
+87 | OpImageSampleImplicitLod
+88 | OpImageSampleExplicitLod
+89 | OpImageSampleDrefImplicitLod
+90 | OpImageSampleDrefExplicitLod
+91 | OpImageSampleProjImplicitLod
+92 | OpImageSampleProjExplicitLod
+93 | OpImageSampleProjDrefImplicitLod
+94 | OpImageSampleProjDrefExplicitLod
+95 | OpImageFetch
+96 | OpImageGather
+97 | OpImageDrefGather
+98 | OpImageRead
+99 | OpImageWrite
+100 | OpImage
+103 | OpImageQuerySizeLod
+104 | OpImageQuerySize
+105 | OpImageQueryLod
+106 | OpImageQueryLevels
+107 | OpImageQuerySamples
+109 | OpConvertFToU
+110 | OpConvertFToS
+111 | OpConvertSToF
+112 | OpConvertUToF
+113 | OpUConvert
+114 | OpSConvert
+115 | OpFConvert
+116 | OpQuantizeToF16
+124 | OpBitcast
+126 | OpSNegate
+127 | OpFNegate
+128 | OpIAdd
+129 | OpFAdd
+130 | OpISub
+131 | OpFSub
+132 | OpIMul
+133 | OpFMul
+134 | OpUDiv
+135 | OpSDiv
+136 | OpFDiv
+137 | OpUMod
+138 | OpSRem
+139 | OpSMod
+140 | OpFRem
+141 | OpFMod
+142 | OpVectorTimesScalar
+143 | OpMatrixTimesScalar
+144 | OpVectorTimesMatrix
+145 | OpMatrixTimesVector
+146 | OpMatrixTimesMatrix
+147 | OpOuterProduct
+148 | OpDot
+149 | OpIAddCarry
+150 | OpISubBorrow
+151 | OpUMulExtended
+152 | OpSMulExtended
+154 | OpAny
+155 | OpAll
+156 | OpIsNan
+157 | OpIsInf
+164 | OpLogicalEqual
+165 | OpLogicalNotEqual
+166 | OpLogicalOr
+167 | OpLogicalAnd
+168 | OpLogicalNot
+169 | OpSelect
+170 | OpIEqual
+171 | OpINotEqual
+172 | OpUGreaterThan
+173 | OpSGreaterThan
+174 | OpUGreaterThanEqual
+175 | OpSGreaterThanEqual
+176 | OpULessThan
+177 | OpSLessThan
+178 | OpULessThanEqual
+179 | OpSLessThanEqual
+180 | OpFOrdEqual
+181 | OpFUnordEqual
+182 | OpFOrdNotEqual
+183 | OpFUnordNotEqual
+184 | OpFOrdLessThan
+185 | OpFUnordLessThan
+186 | OpFOrdGreaterThan
+187 | OpFUnordGreaterThan
+188 | OpFOrdLessThanEqual
+189 | OpFUnordLessThanEqual
+190 | OpFOrdGreaterThanEqual
+191 | OpFUnordGreaterThanEqual
+194 | OpShiftRightLogical
+195 | OpShiftRightArithmetic
+196 | OpShiftLeftLogical
+197 | OpBitwiseOr
+198 | OpBitwiseXor
+199 | OpBitwiseAnd
+200 | OpNot
+201 | OpBitFieldInsert
+202 | OpBitFieldSExtract
+203 | OpBitFieldUExtract
+204 | OpBitReverse
+205 | OpBitCount
+207 | OpDPdx
+208 | OpDPdy
+209 | OpFwidth
+210 | OpDPdxFine
+211 | OpDPdyFine
+212 | OpFwidthFine
+213 | OpDPdxCoarse
+214 | OpDPdyCoarse
+215 | OpFwidthCoarse
+224 | OpControlBarrier
+225 | OpMemoryBarrier
+227 | OpAtomicLoad
+228 | OpAtomicStore
+229 | OpAtomicExchange
+230 | OpAtomicCompareExchange
+232 | OpAtomicIIncrement
+233 | OpAtomicIDecrement
+234 | OpAtomicIAdd
+235 | OpAtomicISub
+236 | OpAtomicSMin
+237 | OpAtomicUMin
+238 | OpAtomicSMax
+239 | OpAtomicUMax
+240 | OpAtomicAnd
+241 | OpAtomicOr
+242 | OpAtomicXor
+245 | OpPhi
+246 | OpLoopMerge
+247 | OpSelectionMerge
+248 | OpLabel
+249 | OpBranch
+250 | OpBranchConditional
+251 | OpSwitch
+252 | OpKill
+253 | OpReturn
+254 | OpReturnValue
+255 | OpUnreachable
+331 | OpExecutionModeId
+332 | OpDecorateId
