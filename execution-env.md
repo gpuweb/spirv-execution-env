@@ -234,7 +234,6 @@ All execution modes declared by **OpExecutionMode** must be one of the following
 *   **DepthLess**
 *   **DepthUnchanged**
 *   **LocalSize**
-*   **LocalSizeHint**
 
 [//]: # (No subgroups support. Useful, but not widely available?)
 
