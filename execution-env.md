@@ -396,17 +396,18 @@ Each block **_B_** in a function must satisfy one of the following rules:
 
 #### Memory Semantics
 
-Among mask bits up to and including 0x10 (SequentiallyConsistent), only the following may be set:
-
-
+Among mask bits up to and including 0x10 (SequentiallyConsistent), only the following may be set
+for an **OpControlBarrier** or **OpMemoryBarrier** instruction:
 
 *   **Acquire**
 *   **Release**
 *   **AcquireRelease**  [how does this interact with the memory model?]
 
+No mask bits up to and including 0x10 (SequentiallyConsistent) may be set for an atomic instruction (**OpAtomic**\*).
+That is, atomic operations used **Relaxed** ordering.
+
+
 The following mask bits may be used in any combination:
-
-
 
 *   **UniformMemory**
 *   **WorkgroupMemory**
