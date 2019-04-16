@@ -523,6 +523,7 @@ Offsets and strides are expressed in units of 8-bit bytes.
 
 A scalar numeric value of 32 bits occupies 4 bytes in memory, i.e. its size is 4.
 In general a scalar value of _N_ bits occupies _floor((N + 7) / 8)_ bytes.
+Scalars are represented in little-endian byte order.
 
 Layout decorations on SPIR-V objects may not conflict or be duplicated:
 
