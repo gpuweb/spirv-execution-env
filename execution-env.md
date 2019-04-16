@@ -404,7 +404,7 @@ for an **OpControlBarrier** or **OpMemoryBarrier** instruction:
 *   **AcquireRelease**  [how does this interact with the memory model?]
 
 No mask bits up to and including 0x10 (SequentiallyConsistent) may be set for an atomic instruction (**OpAtomic**\*).
-That is, atomic operations used **Relaxed** ordering.
+That is, atomic operations use **Relaxed** ordering.
 
 
 The following mask bits may be used in any combination:
