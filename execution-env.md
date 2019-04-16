@@ -318,6 +318,8 @@ Scalar integer types (**OpTypeInteger**) must have one of the following widths:
 
 *   32 bits
 
+Signed integers use two's complement representation.
+
 Vector types must have one of the following number of components:
 
 
