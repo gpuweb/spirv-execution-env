@@ -306,11 +306,8 @@ Full semantic descriptions of what these mean, how the behave, when they have wh
 
 ### Types
 
-Scalar floating-point types (**OpTypeFloat**) must have one of the following widths:
+Scalar floating-point types (**OpTypeFloat**) must have 32 bit width.
 
-
-
-*   32 bits
 
 Scalar integer types (**OpTypeInteger**) must have one of the following widths:
 
