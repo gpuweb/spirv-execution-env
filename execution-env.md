@@ -308,12 +308,7 @@ Full semantic descriptions of what these mean, how the behave, when they have wh
 
 Scalar floating-point types (**OpTypeFloat**) must have 32 bit width.
 
-
-Scalar integer types (**OpTypeInteger**) must have one of the following widths:
-
-
-
-*   32 bits
+Scalar integer types (**OpTypeInteger**) must have 32 bit width.
 
 Signed integers use two's complement representation.
 
