@@ -449,13 +449,20 @@ Fusing and reassociation of floating point operations is allowed when those inst
 
 ### Instructions
 
+Supported OpCodes are listed in [Appendix A](#a-supported-opcodes).
 
+####  Miscellaneous instructions
 
 *   OpUndef is not allowed.
+
+####  Constant creation instructions
+
+*   OpSpecConstantOp:
+   * OpVectorShuffle may not have a component literal with value 0xFFFFFFFF.
+
+####  Composite instructions
+
 *   OpVectorShuffle may not have a component literal with value 0xFFFFFFFF.
-
-Supported OpCodes are iterated in [Appendix A](#a-supported-opcodes).
-
 
 ## Data Types and Layouts
 
