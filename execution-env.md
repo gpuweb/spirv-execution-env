@@ -373,41 +373,48 @@ Each block **_B_** in a function must satisfy one of the following rules:
 
 **Scope** when used for memory must be one of:
 
-
 [//]: # (No **Device** since that's optional for Vulkan memory model.  In single-device configurations QueueFamilyKHR is the same as Device)
 
 *   **Workgroup**
-*   **Subgroup**
+*   **Invocation**
 *   **QueueFamilyKHR**
 
 **Scope** when used for execution must be one of:
 
-
-
 *   **Workgroup**
-*   **Subgroup**
 
+[//]: # (Vulkan limits execution scope to Workgroup and Subgroup, but WebGPU MVP does not have subgroup ops)
+
+Individual SPIR-V instructions may further restrict valid values.
 
 #### Memory Semantics
 
-Among mask bits up to and including 0x10 (SequentiallyConsistent), only the following may be set
-for an **OpControlBarrier** or **OpMemoryBarrier** instruction:
+A Memory Semantics operand is expressed in a single word,
+using mask bits in grouped into three sets:
 
-*   **AcquireRelease**
+*   _Memory Semantics Order bits_ are mask bits with value between 1 through 0x10:
+    * 0x1 _Reserved_
+    * 0x2 **Acquire**
+    * 0x4 **Release**
+    * 0x8 **AcquireRelease**
+    * 0x10 **SequentiallyConsistent**
+*   _Memory Semantics Storage Class bits_ are mask bits with value between 0x20 through 0x1000:
+    * 0x20 _Reserved_
+    * 0x40 **UniformMemory**
+    * 0x80 **SubgroupMemory**
+    * 0x100 **WorkgroupMemory**
+    * 0x200 **CrossWorkgroupMemory**
+    * 0x400 **AtomicCounterMemory**
+    * 0x800 **ImageMemory**
+    * 0x1000 **OutputMemoryKHR**
+*   _Memory Semantics Propagation bits_ are mask bits with value between 0x2000 through 0x4000:
+    * 0x2000 **MakeAvailableKHR**
+    * 0x4000 **MakeVisibleKHR**
 
-No mask bits up to and including 0x10 (SequentiallyConsistent) may be set for an atomic instruction (**OpAtomic**\*).
-That is, atomic operations use **Relaxed** ordering.
-
-
-The following mask bits may be used in any combination:
-
-*   **UniformMemory**
-*   **WorkgroupMemory**
-*   **ImageMemory**
-*   **OutputMemoryKHR**
-*   **MakeAvailableKHR**
-*   **MakeVisibleKHR**
-
+Individual SPIR-V instructions may further restrict valid values for a _Memory Semantics
+operand_.
+The restrictions are expressed in terms of the order, storage class, and propagation
+sets of bits.
 
 #### Memory Access
 
@@ -449,13 +456,63 @@ Fusing and reassociation of floating point operations is allowed when those inst
 
 ### Instructions
 
+Supported OpCodes are listed in [Appendix A](#a-supported-opcodes).
 
+The following sections describe differences from specific SPIR-V instructions.
 
-*   OpUndef is not allowed.
+####  Miscellaneous instructions
+
+*   **OpUndef** is not allowed.
+
+####  Constant creation instructions
+
+*   **OpSpecConstantOp**:
+   * Opcode **OpVectorShuffle** may not have a component literal with value 0xFFFFFFFF.
+
+####  Composite instructions
+
 *   OpVectorShuffle may not have a component literal with value 0xFFFFFFFF.
 
-Supported OpCodes are iterated in [Appendix A](#a-supported-opcodes).
+####  Atomic instructions
 
+*  Atomic instructions (**OpAtomic**\*) are restricted:
+   *   The _Memory_ scope operand must be **QueueFamilyKHR**
+   *   The _Semantics_ operand must be zero:
+      * Must not set any Memory Semantics Order bits.
+      * Must not set any Memory Semantics Storage Class bits.
+      * Must not set any Memory Semantics Propagation bits.
+
+Note: In terms from other standards, **OpAtomic**\* instructions are _Relaxed_.
+
+Note: In the memory model, atomic operations automatically include
+availability and visibility semantics.
+
+####  Barrier instructions
+
+*  **OpControlBarrier**\* restrictions:
+   *   The _Execution_ scope operand must be **Workgroup**
+   *   The _Memory_ scope operand must be **Workgroup**
+   *   The _Semantics_ operand:
+      * Memory Semantics Order bits: Must set the **AcquireRelease** bit, and no other bits.
+      * Memory Semantics Storage Class bits: Must set the **WorkgroupMemory** bit, and no other bits.
+      * Must not set any Memory Semantics Propagation bits.
+
+Note: To ensure propagation of **Workgroup** writes to readers,
+individual accesses of **Workgroup** memory should use availability
+and visibility semantics:
+**MakePointerAvailableKHR** with **Workgroup** scope on writes,
+**MakePointerVisibleKHR** with **Workgroup** scope on reads,
+and **NonPrivatePointerKHR** on both.
+
+*  **OpMemoryBarrier**\* restrictions:
+   *   The _Memory_  scope operand must be **Workgroup**
+   *   The _Semantics_ operand:
+      * Must not set any Memory Semantics Order bits.
+      * Memory Semantics Storage Class bits: Must set the **ImageMemory** bit, and no other bits.
+      * Must not set any Memory Semantics Propagation bits.
+
+Note: **OpMemoryBarrier** is only used to order reads and writes by the same
+invocation to the same locations in image memory.
 
 ## Data Types and Layouts
 
