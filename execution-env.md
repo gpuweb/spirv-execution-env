@@ -149,10 +149,10 @@ The version number (second 32-bit word) of a SPIR-V module must be one of the fo
 
 *   0x00010300 (version 1.3) [TBD: how far back do we need to go to get broad-enough support?]
 *   … TBD: Subsequent version numbers with additional constraints that the functionality in the module can be rewritten by the browser to downgrade it to version 1.3.
-    *   restriction 1 TBD
-    *   restriction 2 TBD
-    *   ...
-*   … 
+  *   restriction 1 TBD
+  *   restriction 2 TBD
+  *   ...
+*   …
 
 
 ### Capabilities
@@ -204,14 +204,14 @@ There must be at least one **OpEntryPoint** in a module, and each one present mu
 
 
 
-*   The **OpFunction** declared as the entry point must have no **OpFunctionParameter** and  its _Return Type_ must be **OpTypeVoid**.
-*   The complete call graph rooted by the entry point must
-    *   be present in the module (the **Linkage** capability is not valid, so there are no partially linked modules), and
-    *   not contain any cycles (no recursion, even statically).
-*   The _Name_ of an **OpEntryPoint**
-    * cannot be used by any other **OpEntryPoint** in the same module.
-    * has its length bounded due to SPIR-V instruction length limits.
-    * may be limited by the WebGPU specification. [WHLSL Issue 292](https://github.com/gpuweb/WHLSL/issues/292)
+* The **OpFunction** declared as the entry point must have no **OpFunctionParameter** and  its _Return Type_ must be **OpTypeVoid**.
+* The complete call graph rooted by the entry point must
+  *   be present in the module (the **Linkage** capability is not valid, so there are no partially linked modules), and
+  *   not contain any cycles (no recursion, even statically).
+* The _Name_ of an **OpEntryPoint**
+  * cannot be used by any other **OpEntryPoint** in the same module.
+  * has its length bounded due to SPIR-V instruction length limits.
+  * may be limited by the WebGPU specification. [WHLSL Issue 292](https://github.com/gpuweb/WHLSL/issues/292)
 
 The execution model declared by each **OpEntryPoint** must be one of the following:
 
@@ -363,10 +363,10 @@ Each block **_B_** in a function must satisfy one of the following rules:
 
 
 
-*   **_B_** is the entry block (the first block listed in the function body), or there is a control flow path from the entry block to **_B_**.  (We say **_B_** is _reachable._)
-*   There is no control flow path from the entry block to **_B_**, but:
-    *   **_B_** is named as the merge-block for a merge instruction in a reachable block.  Additionally there are no branches to **_B_**, and **_B_** contains only an OpLabel and an OpUnreachable instruction.
-    *   **_B_** is named as the continue-target for an OpLoopMerge instruction in a reachable block **_H_**.  Additionally there are no branches to **_B_**, and **_B_** contains only an OpLabel and an OpBranch instruction to **_H._**
+* **_B_** is the entry block (the first block listed in the function body), or there is a control flow path from the entry block to **_B_**.  (We say **_B_** is _reachable._)
+* There is no control flow path from the entry block to **_B_**, but:
+  * **_B_** is named as the merge-block for a merge instruction in a reachable block.  Additionally there are no branches to **_B_**, and **_B_** contains only an OpLabel and an OpUnreachable instruction.
+  * **_B_** is named as the continue-target for an OpLoopMerge instruction in a reachable block **_H_**.  Additionally there are no branches to **_B_**, and **_B_** contains only an OpLabel and an OpBranch instruction to **_H._**
 
 
 #### Scope
@@ -393,23 +393,23 @@ A Memory Semantics operand is expressed in a single word,
 using mask bits in grouped into three sets:
 
 *   _Memory Semantics Order bits_ are mask bits with value between 1 through 0x10:
-    * 0x1 _Reserved_
-    * 0x2 **Acquire**
-    * 0x4 **Release**
-    * 0x8 **AcquireRelease**
-    * 0x10 **SequentiallyConsistent**
+  * 0x1 _Reserved_
+  * 0x2 **Acquire**
+  * 0x4 **Release**
+  * 0x8 **AcquireRelease**
+  * 0x10 **SequentiallyConsistent**
 *   _Memory Semantics Storage Class bits_ are mask bits with value between 0x20 through 0x1000:
-    * 0x20 _Reserved_
-    * 0x40 **UniformMemory**
-    * 0x80 **SubgroupMemory**
-    * 0x100 **WorkgroupMemory**
-    * 0x200 **CrossWorkgroupMemory**
-    * 0x400 **AtomicCounterMemory**
-    * 0x800 **ImageMemory**
-    * 0x1000 **OutputMemoryKHR**
+  * 0x20 _Reserved_
+  * 0x40 **UniformMemory**
+  * 0x80 **SubgroupMemory**
+  * 0x100 **WorkgroupMemory**
+  * 0x200 **CrossWorkgroupMemory**
+  * 0x400 **AtomicCounterMemory**
+  * 0x800 **ImageMemory**
+  * 0x1000 **OutputMemoryKHR**
 *   _Memory Semantics Propagation bits_ are mask bits with value between 0x2000 through 0x4000:
-    * 0x2000 **MakeAvailableKHR**
-    * 0x4000 **MakeVisibleKHR**
+  * 0x2000 **MakeAvailableKHR**
+  * 0x4000 **MakeVisibleKHR**
 
 Individual SPIR-V instructions may further restrict valid values for a _Memory Semantics
 operand_.
@@ -467,7 +467,7 @@ The following sections describe differences from specific SPIR-V instructions.
 ####  Constant creation instructions
 
 *   **OpSpecConstantOp**:
-   * Opcode **OpVectorShuffle** may not have a component literal with value 0xFFFFFFFF.
+  * Opcode **OpVectorShuffle** may not have a component literal with value 0xFFFFFFFF.
 
 ####  Composite instructions
 
@@ -476,8 +476,8 @@ The following sections describe differences from specific SPIR-V instructions.
 ####  Atomic instructions
 
 *  Atomic instructions (**OpAtomic**\*) are restricted:
-   *   The _Memory_ scope operand must be **QueueFamilyKHR**
-   *   The _Semantics_ operand must be zero:
+  *   The _Memory_ scope operand must be **QueueFamilyKHR**
+  *   The _Semantics_ operand must be zero:
       * Must not set any Memory Semantics Order bits.
       * Must not set any Memory Semantics Storage Class bits.
       * Must not set any Memory Semantics Propagation bits.
@@ -490,9 +490,9 @@ availability and visibility semantics.
 ####  Barrier instructions
 
 *  **OpControlBarrier**\* restrictions:
-   *   The _Execution_ scope operand must be **Workgroup**
-   *   The _Memory_ scope operand must be **Workgroup**
-   *   The _Semantics_ operand:
+  *   The _Execution_ scope operand must be **Workgroup**
+  *   The _Memory_ scope operand must be **Workgroup**
+  *   The _Semantics_ operand:
       * Memory Semantics Order bits: Must set the **AcquireRelease** bit, and no other bits.
       * Memory Semantics Storage Class bits: Must set the **WorkgroupMemory** bit, and no other bits.
       * Must not set any Memory Semantics Propagation bits.
@@ -505,8 +505,8 @@ and visibility semantics:
 and **NonPrivatePointerKHR** on both.
 
 *  **OpMemoryBarrier**\* restrictions:
-   *   The _Memory_  scope operand must be **Workgroup**
-   *   The _Semantics_ operand:
+  *   The _Memory_  scope operand must be **Workgroup**
+  *   The _Semantics_ operand:
       * Must not set any Memory Semantics Order bits.
       * Memory Semantics Storage Class bits: Must set the **ImageMemory** bit, and no other bits.
       * Must not set any Memory Semantics Propagation bits.
@@ -577,11 +577,11 @@ Scalars are represented in little-endian byte order.
 Layout decorations on SPIR-V objects may not conflict or be duplicated:
 
 * A SPIR-V object or structure member must have at most one decoration each of kind:
-   * **Offset**
-   * **ArrayStride**
-   * **MatrixStride**
-   * **RowMajor**
-   * **ColMajor**
+  * **Offset**
+  * **ArrayStride**
+  * **MatrixStride**
+  * **RowMajor**
+  * **ColMajor**
 * A SPIR-V structure member must not be decorated with both **RowMajor** and **ColMajor**.
 
 The numeric order of **Offset** decorations does not need to follow structure member
