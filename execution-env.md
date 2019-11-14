@@ -238,9 +238,10 @@ All execution modes declared by **OpExecutionMode** must be one of the following
 [//]: # (No subgroups support. Useful, but not widely available?)
 
 
+
 ### Debug Instructions
 
-All debug instructions must be stripped.
+The following debug instructions are permitted: OpName, OpMemberName, OpLine, OpNoLine, OpModuleProcessed, OpString, OpSourceExtension, OpSource, and OpSourceContinued.
 
 
 ### Annotations
@@ -865,3 +866,12 @@ OpCode | Name
 255 | OpUnreachable
 331 | OpExecutionModeId
 332 | OpDecorateId
+333 | OpName
+334 | OpMemberName
+335 | OpLine
+336 | OpNoLine
+337 | OpModuleProcessed
+338 | OpString
+339 | OpSourceExtension
+340 | OpSource
+341 | OpSourceContinued
