@@ -513,7 +513,7 @@ and visibility semantics:
 and **NonPrivatePointerKHR** on both.
 
 *  **OpMemoryBarrier**\* restrictions:
-  *   The _Memory_  scope operand must be **Workgroup**
+  *   The _Memory_  scope operand must be **Invocation**
   *   The _Semantics_ operand:
       * Must not set any Memory Semantics Order bits.
       * Memory Semantics Storage Class bits: Must set the **ImageMemory** bit, and no other bits.
