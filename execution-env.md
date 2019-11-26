@@ -380,9 +380,13 @@ Each block **_B_** in a function must satisfy one of the following rules:
 *   **Invocation**
 *   **QueueFamilyKHR**
 
+**Workgroup** memory scope is only usable in a **GLCompute** shader.
+
 **Scope** when used for execution must be one of:
 
 *   **Workgroup**
+
+**Workgroup** execution scope is only usable in a **GLCompute** shader.
 
 [//]: # (Vulkan limits execution scope to Workgroup and Subgroup, but WebGPU MVP does not have subgroup ops)
 
@@ -490,13 +494,16 @@ availability and visibility semantics.
 
 ####  Barrier instructions
 
+
 *  **OpControlBarrier**\* restrictions:
-  *   The _Execution_ scope operand must be **Workgroup**
-  *   The _Memory_ scope operand must be **Workgroup**
-  *   The _Semantics_ operand:
-      * Memory Semantics Order bits: Must set the **AcquireRelease** bit, and no other bits.
-      * Memory Semantics Storage Class bits: Must set the **WorkgroupMemory** bit, and no other bits.
-      * Must not set any Memory Semantics Propagation bits.
+    * **OpControlBarrier** may only be used in the call graph of **GLCompute**
+    entry point.
+    *   The _Execution_ scope operand must be **Workgroup**
+    *   The _Memory_ scope operand must be **Workgroup**
+    *   The _Semantics_ operand:
+        * Memory Semantics Order bits: Must set the **AcquireRelease** bit, and no other bits.
+        * Memory Semantics Storage Class bits: Must set the **WorkgroupMemory** bit, and no other bits.
+        * Must not set any Memory Semantics Propagation bits.
 
 Note: To ensure propagation of **Workgroup** writes to readers,
 individual accesses of **Workgroup** memory should use availability
