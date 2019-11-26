@@ -398,23 +398,23 @@ A Memory Semantics operand is expressed in a single word,
 using mask bits in grouped into three sets:
 
 *   _Memory Semantics Order bits_ are mask bits with value between 1 through 0x10:
-  * 0x1 _Reserved_
-  * 0x2 **Acquire**
-  * 0x4 **Release**
-  * 0x8 **AcquireRelease**
-  * 0x10 **SequentiallyConsistent**
+    * 0x1 _Reserved_
+    * 0x2 **Acquire**
+    * 0x4 **Release**
+    * 0x8 **AcquireRelease**
+    * 0x10 **SequentiallyConsistent**
 *   _Memory Semantics Storage Class bits_ are mask bits with value between 0x20 through 0x1000:
-  * 0x20 _Reserved_
-  * 0x40 **UniformMemory**
-  * 0x80 **SubgroupMemory**
-  * 0x100 **WorkgroupMemory**
-  * 0x200 **CrossWorkgroupMemory**
-  * 0x400 **AtomicCounterMemory**
-  * 0x800 **ImageMemory**
-  * 0x1000 **OutputMemoryKHR**
+    * 0x20 _Reserved_
+    * 0x40 **UniformMemory**
+    * 0x80 **SubgroupMemory**
+    * 0x100 **WorkgroupMemory**
+    * 0x200 **CrossWorkgroupMemory**
+    * 0x400 **AtomicCounterMemory**
+    * 0x800 **ImageMemory**
+    * 0x1000 **OutputMemoryKHR**
 *   _Memory Semantics Propagation bits_ are mask bits with value between 0x2000 through 0x4000:
-  * 0x2000 **MakeAvailableKHR**
-  * 0x4000 **MakeVisibleKHR**
+    * 0x2000 **MakeAvailableKHR**
+    * 0x4000 **MakeVisibleKHR**
 
 Individual SPIR-V instructions may further restrict valid values for a _Memory Semantics
 operand_.
@@ -491,11 +491,11 @@ The following sections describe differences from specific SPIR-V instructions.
 ####  Atomic instructions
 
 *  Atomic instructions (**OpAtomic**\*) are restricted:
-  *   The _Memory_ scope operand must be **QueueFamilyKHR**
-  *   The _Semantics_ operand must be zero:
-      * Must not set any Memory Semantics Order bits.
-      * Must not set any Memory Semantics Storage Class bits.
-      * Must not set any Memory Semantics Propagation bits.
+    *   The _Memory_ scope operand must be **QueueFamilyKHR**
+    *   The _Semantics_ operand must be zero:
+        * Must not set any Memory Semantics Order bits.
+        * Must not set any Memory Semantics Storage Class bits.
+        * Must not set any Memory Semantics Propagation bits.
 
 Note: In terms from other standards, **OpAtomic**\* instructions are _Relaxed_.
 
@@ -523,11 +523,11 @@ and visibility semantics:
 and **NonPrivatePointerKHR** on both.
 
 *  **OpMemoryBarrier**\* restrictions:
-  *   The _Memory_  scope operand must be **Invocation**
-  *   The _Semantics_ operand:
-      * Must not set any Memory Semantics Order bits.
-      * Memory Semantics Storage Class bits: Must set the **ImageMemory** bit, and no other bits.
-      * Must not set any Memory Semantics Propagation bits.
+    *   The _Memory_  scope operand must be **Invocation**
+    *   The _Semantics_ operand:
+        * Must not set any Memory Semantics Order bits.
+        * Memory Semantics Storage Class bits: Must set the **ImageMemory** bit, and no other bits.
+        * Must not set any Memory Semantics Propagation bits.
 
 Note: **OpMemoryBarrier** is only used to order reads and writes by the same
 invocation to the same locations in image memory.
