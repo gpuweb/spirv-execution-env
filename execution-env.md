@@ -474,6 +474,16 @@ The following sections describe differences from specific SPIR-V instructions.
 *   **OpSpecConstantOp**:
   * Opcode **OpVectorShuffle** may not have a component literal with value 0xFFFFFFFF.
 
+####  Memory instructions
+
+* **Workgroup** variables are only usable in **GLCompute** shaders.
+  Specifically:
+  * If instruction _Inst_ is in the function parameter list or the body of
+    a function in the call graph of an entry point _E_, and
+  * The type of any operand of _Inst_ or the result of _Inst_ is a pointer type with
+    storage class **Workgroup**,
+  * Then _E_ must have an execution model of **GLCompute**.
+
 ####  Composite instructions
 
 *   OpVectorShuffle may not have a component literal with value 0xFFFFFFFF.
