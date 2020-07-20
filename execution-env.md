@@ -1,5 +1,10 @@
 # WebGPU Execution Environment
 
+**Note** This document is in transition.
+It started as a specification of the form and semantics SPIR-V modules that could be _directly ingestible_ as the shader language for WebGPU.
+It is transitioning to a specification of the form and semantics of SPIR-V modules that should be _translatable into WGSL_, such that
+the corresponding WGSL shaders are ingestible as shaders in WebGPU.
+
 Note: Many items are marked "TBD".  In most cases those items will be resolved once the exact feature set of WebGPU has been determined.
 
 ## General WebGPU Environment
@@ -22,8 +27,11 @@ A WebGPU pipeline defines:
   Each resource in a resource interface can be either read-only or read-write.
 * Various "fixed function" configuration options.
 
-WebGPU shaders are expressed in SPIR-V.  SPIR-V is usable in several execution environments, and so its core definition describes a superset of functionality across all those environments.
-The "WebGPU Execution Environment Specification for SPIR-V" section describes restrictions on SPIR-V for use with WebGPU.
+WebGPU shaders are expressed in WGSL.
+However, a SPIR-V module can often be translated into WGSL for use in WebGPU.
+SPIR-V is usable in several execution environments, and so its core definition describes a superset of functionality across all those environments.
+The "WebGPU Execution Environment Specification for SPIR-V" section describes restrictions on SPIR-V such that they can be expected
+to be translated into WGSL for use with WebGPU.
 
 ### Security Model
 
@@ -113,9 +121,10 @@ Creating a pointer for a resource that points outside the resource _may_ result 
 
 ### Introduction
 
-WebGPU is a client API for SPIR-V. Valid s<span style="color:#222222;">haders for WebGPU are defined by this document in addition to the [Khronos SPIR-V Specification, version 1.3, revision 5](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html)<span style="color:#222222;">.<span style="color:#222222;">  [TBD: update to latest available specification] See the "Version" subsection below for allowed version numbers.</span></span></span>
+Shaders in SPIR-V that may be translated into WGSL are specified by this rules in this document in addition to the [Khronos SPIR-V Specification](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html).
+[TBD: update to latest available specification] See the "Version" subsection below for allowed version numbers.
 
-The following sections visit the parts of a SPIR-V module, in order, covering each section, and state additional requirements for using shaders in WebGPU. These are in addition to all requirements already present in the SPIR-V specification itself.
+The following sections visit the parts of a SPIR-V module, in order, covering each section, and state additional requirements for SPIR-V shaders translatable for use in WebGPU. These are in addition to all requirements already present in the SPIR-V specification itself.
 
 ### Undefined Behaviour
 
@@ -143,17 +152,16 @@ Other operations can result in out-of-bounds accesses even if they aren't on res
 
 ### Version
 
-The version number (second 32-bit word) of a SPIR-V module must be one of the following:
+SPIR-V versions 1.0, 1.1, 1.2, 1.3, 1.4, 1.5 should be usable: The version number (second 32-bit word) of a SPIR-V module must be one of the following:
 
+*   0x00010000 (SPIR-V 1.0)
+*   0x00010100 (SPIR-V 1.1)
+*   0x00010200 (SPIR-V 1.2)
+*   0x00010300 (SPIR-V 1.3)
+*   0x00010400 (SPIR-V 1.4)
+*   0x00010500 (SPIR-V 1.5)
 
-
-*   0x00010300 (version 1.3) [TBD: how far back do we need to go to get broad-enough support?]
-*   … TBD: Subsequent version numbers with additional constraints that the functionality in the module can be rewritten by the browser to downgrade it to version 1.3.
-  *   restriction 1 TBD
-  *   restriction 2 TBD
-  *   ...
-*   …
-
+Features introduced in newer versions might still be unavailable due to restrictions introduced later in this specification.
 
 ### Capabilities
 
@@ -181,6 +189,12 @@ All extensions declared by **OpExtension** instructions must be one of the follo
 
 
 *   SPV_KHR_vulkan_memory_model
+*   SPV_KHR_storage_buffer_storage_class
+*   SPV_KHR_no_integer_wrap_decoration
+*   SPV_KHR_non_semantic_info
+*   SPV_GOOGLE_decorate_string
+*   SPV_GOOGLE_hlsl_functionality1
+*   SPV_GOOGLE_user_type
 *   [No other extensions allowed for now]
 
 
@@ -189,13 +203,21 @@ All extensions declared by **OpExtension** instructions must be one of the follo
 All extended instruction sets declared by **OpExtInstImport** must be one of the following:
 
 
-
 *   "GLSL.std.450"
+*   A non-semantic extended instruction set following the conventions in
+    [SPV_KHR_non_semantic_info](https://htmlpreview.github.io/?https://github.com/KhronosGroup/SPIRV-Registry/blob/master/extensions/KHR/SPV_KHR_non_semantic_info.html)
+    In particular, "NonSemantic." is a prefix of the extended instruction set name.
 
 
 ### SPIR-V Memory Model
 
-The addressing declared by **OpMemoryModel** must be **Logical**. The memory model declared must be **VulkanKHR**.
+The addressing declared by **OpMemoryModel** must be **Logical**.
+
+The memory model declared must be one of:
+
+* **Simple**
+* **GLSL450**
+* **Vulkan**, also known as **VulkanKHR**
 
 
 ### Entry Points
@@ -256,7 +278,6 @@ Only the following decorations are valid:
 [//]: # (No **Sample**: WebGPU does not support sample rate shading)
 [//]: # (No **Invariant**: Assume WebGPU MVP does not support this for complexity reasons)
 [//]: # (No **Coherent**: Assume Vulkan memory model)
-[//]: # (No **NoSignedWrap**, **NoUnsignedWrap**: Although useful, they introduce undefined behaviour cases)
 
 *   **SpecId**
 *   **Block**
@@ -280,6 +301,12 @@ Only the following decorations are valid:
 *   **DescriptorSet**
 *   **Offset** (also see "Layouts" below)
 *   **NoContraction**
+*   **NoSignedWrap**
+*   **NoUnsignedWrap**
+*   **CounterBuffer**, also known as **HlslCounterBufferGOOGLE**
+*   **UserSemantic**, also known as **HlslSemanticGOOGLE**
+*   **UserTypeGOOGLE**
+*   **UniformId**
 
 
 #### Built-In Variables
@@ -360,15 +387,8 @@ Storage Class must be one of the following:
 
 #### CFGs
 
-Each block **_B_** in a function must satisfy one of the following rules:
-
-
-
-* **_B_** is the entry block (the first block listed in the function body), or there is a control flow path from the entry block to **_B_**.  (We say **_B_** is _reachable._)
-* There is no control flow path from the entry block to **_B_**, but:
-  * **_B_** is named as the merge-block for a merge instruction in a reachable block.  Additionally there are no branches to **_B_**, and **_B_** contains only an OpLabel and an OpUnreachable instruction.
-  * **_B_** is named as the continue-target for an OpLoopMerge instruction in a reachable block **_H_**.  Additionally there are no branches to **_B_**, and **_B_** contains only an OpLabel and an OpBranch instruction to **_H._**
-
+All functions in the SPIR-V module must use structured control flow.
+See [2.11 Structured Control Flow](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#StructuredControlFlow).
 
 #### Scope
 
@@ -483,6 +503,8 @@ The following sections describe differences from specific SPIR-V instructions.
   * The type of any operand of _Inst_ or the result of _Inst_ is a pointer type with
     storage class **Workgroup**,
   * Then _E_ must have an execution model of **GLCompute**.
+
+* **OpPtrEqual**, **OpPtrNotEqual**, **OpPtrDiff** are not allowed.
 
 ####  Composite instructions
 
@@ -892,3 +914,6 @@ OpCode | Name
 339 | OpSourceExtension
 340 | OpSource
 341 | OpSourceContinued
+400 | OpCopyLogical
+5632 | OpDecorateString
+5633 | OpMemberDecorateString
