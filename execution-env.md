@@ -322,12 +322,12 @@ Builtin | Allowed types | Allowed execution models for the Input storage class |
 **FrontFacing** | Boolean | **Fragment** |
 **FragCoord** | Vector of 4 32-bit floats | **Fragment** |
 **FragDepth** | 32-bit float |  | **Fragment**
-**NumWorkgroups** | Vector of 3 32-bit ints | **GLCompute** |
 **WorkgroupSize** | Vector of 3 32-bit ints | **GLCompute** |
 **LocalInvocationId** | Vector of 3 32-bit ints | **GLCompute** |
 **GlobalInvocationId** | Vector of 3 32-bit ints | **GLCompute** |
 **LocalInvocationIndex** | 32-bit int | **GLCompute** |
 
+Note: **NumWorkgroups** is not in the WebGPU MVP. See https://github.com/gpuweb/gpuweb/issues/920
 
 Full semantic descriptions of what these mean, how the behave, when they have what values, etc. is part of the WebGPU specification proper, not this specification.
 
