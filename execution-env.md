@@ -1,5 +1,6 @@
 # WebGPU Execution Environment
 
+**Note** This document is meant to be a reference for understanding and discussing WebGPU & WGSL. It is not meant to an implemented SPIR-V environment.
 **Note** This document is in transition.
 It started as a specification of the form and semantics SPIR-V modules that could be _directly ingestible_ as the shader language for WebGPU.
 It is transitioning to a specification of the form and semantics of SPIR-V modules that should be _translatable into WGSL_, such that
